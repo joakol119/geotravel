@@ -367,7 +367,14 @@ export default function App() {
               </div>
             </button>
           ))}
-
+          {activeTab === 'zonas' && (
+            <button className="toggle-chip" onClick={async () => {
+              try {
+                const reporte = await api.fetchReporteZonas();
+                setSelected({ type: 'reporte', data: reporte });
+              } catch(e) { console.error(e); }
+            }} style={{ marginBottom:8, background:'#EEEDFE', color:'#534AB7', borderColor:'#534AB7', width:'100%' }}>📊 Reporte por zona</button>
+          )}
           {activeTab === 'zonas' && zonas.map(z => (
             <button key={z.id} className="list-item" onClick={() => handleSelect('zona', z, api.geojsonToLatLngs(z.geojson))}>
               <div style={{ width:32, height:32, borderRadius:8, background:'#EEEDFE', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'#534AB7' }}>{z.nivelAtractivo}</div>
@@ -547,6 +554,21 @@ export default function App() {
                   </div>
                 )}
               </>
+            )}
+            {selected && selected.type === 'reporte' && (
+              <div style={{ padding:16 }}>
+                <h3 style={{ margin:'0 0 12px', fontSize:16 }}>📊 Recorridos por zona</h3>
+                {selected.data.map((r, i) => (
+                  <div key={i} style={{ padding:8, marginBottom:6, background:'#f9f9f6', borderRadius:8, fontSize:13 }}>
+                    <div style={{ fontWeight:700 }}>{r.nombre}</div>
+                    <div style={{ color:'#5f5e5a', marginTop:4 }}>
+                      🟢 Disponibles: {r.disponibles} · 🟡 Pendientes: {r.pendientes} · 🔵 Fuera estación: {r.fueraEstacion} · 🔴 Cancelados: {r.cancelados}
+                    </div>
+                    <div style={{ fontWeight:600, marginTop:2 }}>Total: {r.total}</div>
+                  </div>
+                ))}
+                <button onClick={() => setSelected(null)} style={{ marginTop:8, padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Cerrar</button>
+              </div>
             )}
           </div>
         )}
