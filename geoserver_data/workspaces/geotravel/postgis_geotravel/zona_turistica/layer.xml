@@ -1,0 +1,17 @@
+<layer>
+  <name>zona_turistica</name>
+  <id>LayerInfoImpl--326eadae:19e3b063f45:-7ff4</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--326eadae:19e3b063f45:-7ff2</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--326eadae:19e3b063f45:-7ff5</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2026-05-18 15:19:45.327 UTC</dateCreated>
+  <dateModified>2026-05-18 15:24:46.873 UTC</dateModified>
+</layer>

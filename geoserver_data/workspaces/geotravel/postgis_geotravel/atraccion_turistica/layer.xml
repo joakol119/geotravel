@@ -1,0 +1,17 @@
+<layer>
+  <name>atraccion_turistica</name>
+  <id>LayerInfoImpl--326eadae:19e3b063f45:-7ff6</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--326eadae:19e3b063f45:-7ff1</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--326eadae:19e3b063f45:-7ff7</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2026-05-18 15:18:43.289 UTC</dateCreated>
+  <dateModified>2026-05-18 15:24:58.219 UTC</dateModified>
+</layer>
