@@ -124,8 +124,51 @@ export function layerToGeojson(layer) {
 // GEOCODING (Nominatim / OpenStreetMap - gratuito)
 // ============================================================
 export async function geocode(query) {
+  // Detectar si es una intersección (contiene "y", "&", "esquina", ",")
+  const separators = [' y ', ' & ', ' esquina ', ', '];
+  let calles = null;
+  for (const sep of separators) {
+    if (query.toLowerCase().includes(sep)) {
+      calles = query.toLowerCase().split(sep).map(c => c.trim());
+      break;
+    }
+  }
+
+  // Si es intersección, geocodificar ambas calles y buscar punto cercano
+  if (calles && calles.length === 2) {
+    const [resultados1, resultados2] = await Promise.all([
+      geocodeSingle(calles[0] + ', Montevideo, Uruguay'),
+      geocodeSingle(calles[1] + ', Montevideo, Uruguay'),
+    ]);
+
+    if (resultados1.length > 0 && resultados2.length > 0) {
+      // Buscar el par de puntos más cercano entre ambas calles
+      let minDist = Infinity;
+      let best = null;
+      for (const r1 of resultados1.slice(0, 3)) {
+        for (const r2 of resultados2.slice(0, 3)) {
+          const d = Math.sqrt(Math.pow(r1.lat - r2.lat, 2) + Math.pow(r1.lng - r2.lng, 2));
+          if (d < minDist) {
+            minDist = d;
+            best = {
+              name: calles[0] + ' y ' + calles[1] + ', Montevideo',
+              lat: (r1.lat + r2.lat) / 2,
+              lng: (r1.lng + r2.lng) / 2,
+            };
+          }
+        }
+      }
+      if (best) return [best];
+    }
+  }
+
+  // Búsqueda normal (no intersección)
+  return geocodeSingle(query + ', Montevideo, Uruguay');
+}
+
+async function geocodeSingle(query) {
   const params = new URLSearchParams({
-    q: query + ', Montevideo, Uruguay',
+    q: query,
     format: 'json',
     limit: '5',
     addressdetails: '1',

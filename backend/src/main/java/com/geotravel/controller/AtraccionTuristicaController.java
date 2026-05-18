@@ -22,7 +22,7 @@ public class AtraccionTuristicaController {
     private final AtraccionTuristicaService service = new AtraccionTuristicaService();
 
     // Directorio donde se guardan las imágenes subidas
-    private static final String UPLOAD_DIR = "/usr/local/tomcat/webapps/ROOT/uploads";
+    private static final String UPLOAD_DIR = "/opt/uploads";
 
     @GET
     public Response getAll() {

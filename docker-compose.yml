@@ -43,7 +43,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - uploads:/usr/local/tomcat/webapps/ROOT/uploads
+      - uploads:/opt/uploads
     depends_on:
       db:
         condition: service_healthy
