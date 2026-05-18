@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { MapContainer, TileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
+import ImagePicker from './components/ImagePicker';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
@@ -41,6 +42,8 @@ function FormModal({ title, fields, values, onChange, onSave, onCancel }) {
               <select className="filter-select" style={{ width:'100%' }} value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)}>
                 {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
+              ) : f.type === 'image' ? (
+  <ImagePicker value={values[f.key] || ''} onChange={(url) => onChange(f.key, url)} />
             ) : f.type === 'textarea' ? (
               <textarea style={{ width:'100%', padding:8, border:'1px solid #d3d1c7', borderRadius:6, fontSize:13, resize:'vertical', minHeight:60, boxSizing:'border-box' }}
                 value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)} />
@@ -147,6 +150,7 @@ export default function App() {
         const data = {
           nombre: formValues.nombre, descripcion: formValues.descripcion,
           clasificacion: formValues.clasificacion || 'monumento',
+          fotoUrl: formValues.fotoUrl || null,
           geojson: drawnGeojson || formValues.geojson,
         };
         if (editingId) await api.updateAtraccion(editingId, data);
@@ -239,6 +243,7 @@ export default function App() {
   const atraccionFields = [
     { key: 'nombre', label: 'Nombre' },
     { key: 'descripcion', label: 'Descripcion', type: 'textarea' },
+    { key: 'fotoUrl', label: 'Foto', type: 'image' },
     { key: 'clasificacion', label: 'Clasificacion', type: 'select',
       options: [{value:'museo',label:'Museo'},{value:'teatro',label:'Teatro'},{value:'monumento',label:'Monumento'},
         {value:'plaza',label:'Plaza'},{value:'gastronomia',label:'Gastronomia'},{value:'playa',label:'Playa'},{value:'parque',label:'Parque'}] },
@@ -499,7 +504,7 @@ export default function App() {
                 </div>
               </>
             )}
-            {selected.type === 'atraccion' && (
+           {selected.type === 'atraccion' && (
               <>
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                   <span style={{ fontSize:24 }}>{CLASIF_ICONS[selected.data.clasificacion]||'📍'}</span>
@@ -508,6 +513,13 @@ export default function App() {
                     <span className="tag" style={{ background:'#E1F5EE', color:'#0F6E56' }}>{selected.data.clasificacion}</span>
                   </div>
                 </div>
+                {selected.data.fotoUrl && (
+                  <img src={selected.data.fotoUrl} alt={selected.data.nombre}
+                    style={{ width:'100%', height:160, objectFit:'cover', borderRadius:8, marginTop:12 }} />
+                )}
+                {selected.data.descripcion && (
+                  <p style={{ fontSize:13, color:'#5f5e5a', marginTop:8 }}>{selected.data.descripcion}</p>
+                )}
                 <div style={{ display:'flex', gap:8, marginTop:12 }}>
                   <button onClick={() => handleEdit('atraccion', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>
                   <button onClick={() => handleDelete('atraccion', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>

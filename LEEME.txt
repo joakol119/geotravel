@@ -1,0 +1,139 @@
+# Actualización: Fotos en Atracciones Turísticas
+
+## Archivos incluidos y dónde van
+
+Copiá cada archivo a su ubicación correspondiente dentro de tu proyecto `geotravel/`:
+
+```
+foto-update/
+├── db/
+│   └── migration_foto_url.sql          → NO copiar, ejecutar a mano (ver paso 1)
+├── backend/src/main/java/com/geotravel/
+│   ├── model/AtraccionTuristica.java   → reemplazar en backend/src/main/java/com/geotravel/model/
+│   ├── service/AtraccionTuristicaService.java   → reemplazar en backend/src/main/java/com/geotravel/service/
+│   └── controller/AtraccionTuristicaController.java → reemplazar en backend/src/main/java/com/geotravel/controller/
+└── frontend/src/
+    └── components/ImagePicker.jsx      → copiar a frontend/src/components/
+```
+
+## Paso 1: Migrar la base de datos
+
+Ejecutá esto UNA SOLA VEZ para cambiar la columna en la tabla:
+
+```bash
+cd ~/Desktop/proyectos/geotravel
+docker compose exec db psql -U postgres -d geotravel -c "ALTER TABLE atraccion_turistica DROP COLUMN IF EXISTS foto; ALTER TABLE atraccion_turistica ADD COLUMN IF NOT EXISTS foto_url TEXT;"
+```
+
+## Paso 2: Reemplazar archivos del backend
+
+Copiá los 3 archivos Java (model, service, controller) reemplazando los existentes.
+
+## Paso 3: Copiar ImagePicker.jsx al frontend
+
+Copiá `ImagePicker.jsx` a `frontend/src/components/`
+
+## Paso 4: Cambios manuales en App.jsx
+
+Abrí `frontend/src/App.jsx` y hacé estos 3 cambios:
+
+### 4a. Agregar el import (al inicio del archivo)
+Agregá esta línea junto a los demás imports:
+
+```javascript
+import ImagePicker from './components/ImagePicker';
+```
+
+### 4b. Buscar atraccionFields y agregarle fotoUrl
+Buscá donde dice `atraccionFields` y asegurate de que diga:
+
+```javascript
+const atraccionFields = [
+    { key: 'nombre', label: 'Nombre' },
+    { key: 'descripcion', label: 'Descripción', type: 'textarea' },
+    { key: 'clasificacion', label: 'Clasificación', type: 'select',
+      options: [{ value:'museo',label:'Museo' },{ value:'teatro',label:'Teatro' },{ value:'monumento',label:'Monumento' },
+        { value:'plaza',label:'Plaza' },{ value:'gastronomia',label:'Gastronomía' },{ value:'playa',label:'Playa' },{ value:'parque',label:'Parque' }] },
+    { key: 'fotoUrl', label: 'Foto', type: 'image' },
+];
+```
+
+### 4c. En el FormModal, agregar soporte para type 'image'
+Buscá el componente FormModal y donde renderiza los campos (el map de fields),
+agregá este caso ANTES del return final del map:
+
+```javascript
+{f.type === 'image' && (
+  <ImagePicker
+    value={values[f.key] || ''}
+    onChange={(url) => onChange(f.key, url)}
+  />
+)}
+```
+
+Debería quedar algo así en el FormModal:
+```javascript
+{fields.map(f => (
+  <div key={f.key} style={{ marginBottom:12 }}>
+    <label ...>{f.label}</label>
+    {f.type === 'select' ? (
+      <select ...>...</select>
+    ) : f.type === 'textarea' ? (
+      <textarea ... />
+    ) : f.type === 'image' ? (
+      <ImagePicker value={values[f.key] || ''} onChange={(url) => onChange(f.key, url)} />
+    ) : (
+      <input ... />
+    )}
+  </div>
+))}
+```
+
+## Paso 5: Agregar volumen en docker-compose.yml
+
+Para que las fotos subidas no se pierdan al reiniciar Docker, abrí `docker-compose.yml`
+y en el servicio `backend` agregá un volumen:
+
+```yaml
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/usr/local/tomcat/webapps/ROOT/uploads
+    depends_on:
+      - db
+```
+
+Y al final del archivo, agregá:
+
+```yaml
+volumes:
+  uploads:
+```
+
+## Paso 6: Actualizar schema.sql (para futuros installs)
+
+En `db/schema.sql`, buscá la tabla `atraccion_turistica` y cambiá:
+```sql
+foto            BYTEA,
+```
+Por:
+```sql
+foto_url        TEXT,
+```
+
+## Paso 7: Reconstruir
+
+```bash
+cd ~/Desktop/proyectos/geotravel
+docker compose down
+docker compose up --build
+```
+
+## Cómo funciona
+
+Cuando creás o editás una atracción, el formulario ahora tiene un selector de imagen con 3 opciones:
+- **Buscar**: escribís "cafetería" o "museo" y busca imágenes en Wikimedia Commons (gratis, sin API key)
+- **URL**: pegás la dirección de cualquier imagen de internet
+- **Subir**: subís una foto desde tu computadora (se guarda en el servidor)
