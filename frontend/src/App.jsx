@@ -102,6 +102,8 @@ export default function App() {
   const featureGroupRef = useRef(null);
   const [historico, setHistorico] = useState(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
+  const [rutaInfo, setRutaInfo] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -210,7 +212,7 @@ export default function App() {
   };
 
   const handleSelect = useCallback((type, data, coords) => {
-    setSelected({ type, data }); setHistorico(null); setFlyTarget(coords);
+    setSelected({ type, data }); setHistorico(null); setRutaHaciaRecorrido(null); setRutaInfo(null); setFlyTarget(coords);
   }, []);
 
   const handleSearch = async () => {
@@ -488,7 +490,9 @@ export default function App() {
                 eventHandlers={{ click: () => handleSelect('atraccion', a, coords) }}><Tooltip offset={[0,-12]}>{a.nombre}</Tooltip></Marker>
             ) : null;
           })}
-
+          {rutaHaciaRecorrido && (
+            <Polyline positions={rutaHaciaRecorrido} pathOptions={{ color:'#E24B4A', weight:4, dashArray:'10,6', opacity:0.8 }} />
+          )}
           {searchMarker && (
             <Marker position={searchMarker} icon={createIcon('📍')}>
               <Tooltip permanent>Busqueda</Tooltip>
@@ -528,7 +532,63 @@ export default function App() {
                       setHistorico(h);
                     } catch(e) { console.error(e); }
                   }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Histórico</button>
+                  <button onClick={async () => {
+                    if (!navigator.geolocation) { alert('Tu navegador no soporta GPS'); return; }
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                      const origen = `${pos.coords.longitude},${pos.coords.latitude}`;
+                      const coords = api.geojsonToLatLngs(selected.data.geojson);
+                      const destino = `${coords[0][1]},${coords[0][0]}`;
+                      try {
+                        const res = await fetch(`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijc5OTM0MTAwODJmYzRlMzY4MGIzYjAwMmViNTQ3YTI1IiwiaCI6Im11cm11cjY0In0=&start=${origen}&end=${destino}`);
+                        const data = await res.json();
+                        if (data.features && data.features[0]) {
+                          const route = data.features[0];
+                          setRutaHaciaRecorrido(route.geometry.coordinates.map(c => [c[1], c[0]]));
+                          setRutaInfo({ modo:'🚶 A pie', distancia: (route.properties.summary.distance/1000).toFixed(1), duracion: Math.round(route.properties.summary.duration/60) });
+                        }
+                      } catch(e) { alert('Error calculando ruta'); }
+                    }, () => alert('No se pudo obtener tu ubicación'));
+                  }} style={{ padding:'6px 10px', border:'1px solid #1D9E75', borderRadius:6, background:'white', color:'#1D9E75', cursor:'pointer', fontSize:11 }}>🚶 A pie</button>
+                  <button onClick={async () => {
+                    if (!navigator.geolocation) { alert('Tu navegador no soporta GPS'); return; }
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                      const origen = `${pos.coords.longitude},${pos.coords.latitude}`;
+                      const coords = api.geojsonToLatLngs(selected.data.geojson);
+                      const destino = `${coords[0][1]},${coords[0][0]}`;
+                      try {
+                        const res = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijc5OTM0MTAwODJmYzRlMzY4MGIzYjAwMmViNTQ3YTI1IiwiaCI6Im11cm11cjY0In0=&start=${origen}&end=${destino}`);
+                        const data = await res.json();
+                        if (data.features && data.features[0]) {
+                          const route = data.features[0];
+                          setRutaHaciaRecorrido(route.geometry.coordinates.map(c => [c[1], c[0]]));
+                          setRutaInfo({ modo:'🚗 Auto', distancia: (route.properties.summary.distance/1000).toFixed(1), duracion: Math.round(route.properties.summary.duration/60) });
+                        }
+                      } catch(e) { alert('Error calculando ruta'); }
+                    }, () => alert('No se pudo obtener tu ubicación'));
+                  }} style={{ padding:'6px 10px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:11 }}>🚗 Auto</button>
+                  <button onClick={async () => {
+                    if (!navigator.geolocation) { alert('Tu navegador no soporta GPS'); return; }
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                      const origen = `${pos.coords.longitude},${pos.coords.latitude}`;
+                      const coords = api.geojsonToLatLngs(selected.data.geojson);
+                      const destino = `${coords[0][1]},${coords[0][0]}`;
+                      try {
+                        const res = await fetch(`https://api.openrouteservice.org/v2/directions/cycling-regular?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijc5OTM0MTAwODJmYzRlMzY4MGIzYjAwMmViNTQ3YTI1IiwiaCI6Im11cm11cjY0In0=&start=${origen}&end=${destino}`);
+                        const data = await res.json();
+                        if (data.features && data.features[0]) {
+                          const route = data.features[0];
+                          setRutaHaciaRecorrido(route.geometry.coordinates.map(c => [c[1], c[0]]));
+                          setRutaInfo({ modo:'🚲 Bici', distancia: (route.properties.summary.distance/1000).toFixed(1), duracion: Math.round(route.properties.summary.duration/60) });
+                        }
+                      } catch(e) { alert('Error calculando ruta'); }
+                    }, () => alert('No se pudo obtener tu ubicación'));
+                  }} style={{ padding:'6px 10px', border:'1px solid #F59E0B', borderRadius:6, background:'white', color:'#F59E0B', cursor:'pointer', fontSize:11 }}>🚲 Bici</button>
                 </div>
+                {rutaInfo && (
+                  <div style={{ marginTop:8, padding:8, background:'#E1F5EE', borderRadius:6, fontSize:12 }}>
+                    📍 <strong>{rutaInfo.distancia} km</strong> · ⏱ <strong>{rutaInfo.duracion} min</strong>
+                  </div>
+                )}
                 {historico && (
                   <div style={{ marginTop:12, padding:10, background:'#f9f9f6', borderRadius:8 }}>
                     <div style={{ fontWeight:700, fontSize:13, marginBottom:6 }}>Histórico de estados</div>
