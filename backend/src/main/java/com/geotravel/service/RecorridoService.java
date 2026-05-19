@@ -255,4 +255,20 @@ public class RecorridoService {
         r.setGeojson(rs.getString("geojson"));
         return r;
     }
+    public List<Map<String, Object>> getHistorico(int recorridoId) throws SQLException {
+        String sql = "SELECT estado, fecha FROM historico_estado WHERE recorrido_id = ? ORDER BY fecha DESC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, recorridoId);
+            ResultSet rs = ps.executeQuery();
+            List<Map<String, Object>> result = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> row = new java.util.LinkedHashMap<>();
+                row.put("estado", rs.getString("estado"));
+                row.put("fecha", rs.getTimestamp("fecha").toString());
+                result.add(row);
+            }
+            return result;
+        }
+    }
 }

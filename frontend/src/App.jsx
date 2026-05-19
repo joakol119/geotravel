@@ -89,6 +89,7 @@ export default function App() {
   const [searchMarker, setSearchMarker] = useState(null);
   const [reporte, setReporte] = useState(null);
   const featureGroupRef = useRef(null);
+  const [historico, setHistorico] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -197,7 +198,7 @@ export default function App() {
   };
 
   const handleSelect = useCallback((type, data, coords) => {
-    setSelected({ type, data }); setFlyTarget(coords);
+    setSelected({ type, data }); setHistorico(null); setFlyTarget(coords);
   }, []);
 
   const handleSearch = async () => {
@@ -504,7 +505,25 @@ export default function App() {
                   )}
                   <button onClick={() => handleEdit('recorrido', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>
                   <button onClick={() => handleDelete('recorrido', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>
+                  <button onClick={async () => {
+                    try {
+                      const h = await api.fetchHistorico(selected.data.id);
+                      setHistorico(h);
+                    } catch(e) { console.error(e); }
+                  }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Histórico</button>
                 </div>
+                {historico && (
+                  <div style={{ marginTop:12, padding:10, background:'#f9f9f6', borderRadius:8 }}>
+                    <div style={{ fontWeight:700, fontSize:13, marginBottom:6 }}>Histórico de estados</div>
+                    {historico.length === 0 && <div style={{ fontSize:12, color:'#888780' }}>Sin cambios registrados</div>}
+                    {historico.map((h, i) => (
+                      <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'4px 0', borderBottom:'1px solid #e5e3da', fontSize:12 }}>
+                        <span className="tag" style={{ background: ESTADO_COLORS[h.estado]+'20', color: ESTADO_COLORS[h.estado] }}>{h.estado.replace('_',' ')}</span>
+                        <span style={{ color:'#888780' }}>{new Date(h.fecha).toLocaleString('es-UY')}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </>
             )}
             {selected.type === 'zona' && (

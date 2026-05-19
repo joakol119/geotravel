@@ -206,3 +206,7 @@ export async function fetchRecorridosPorZona(zonaId) {
   const res = await fetch(API + '/recorridos/zona/' + zonaId);
   return res.json();
 }
+export async function fetchHistorico(recorridoId) {
+  const res = await fetch(API + '/recorridos/' + recorridoId + '/historico');
+  return res.json();
+}

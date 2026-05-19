@@ -99,4 +99,12 @@ public class RecorridoController {
             return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
         }
     }
+    @GET @Path("/{id}/historico")
+    public Response getHistorico(@PathParam("id") int id) {
+        try {
+            return Response.ok(service.getHistorico(id)).build();
+        } catch (SQLException e) {
+            return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
+        }
+    }
 }
