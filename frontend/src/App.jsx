@@ -161,6 +161,11 @@ export default function App() {
           observaciones: formValues.observaciones,
           geojson: drawnGeojson || formValues.geojson,
         };
+        // Verificar superposición antes de guardar
+        const check = await api.checkSuperposicion(data.geojson, editingId || null);
+        if (check.superpone) {
+          if (!window.confirm('⚠️ Esta zona se superpone con otra existente. ¿Guardar de todas formas?')) return;
+        }
         if (editingId) await api.updateZona(editingId, data);
         else await api.createZona(data);
       } else if (showForm === 'atraccion') {

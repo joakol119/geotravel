@@ -206,7 +206,15 @@ export async function fetchRecorridosPorZona(zonaId) {
   const res = await fetch(API + '/recorridos/zona/' + zonaId);
   return res.json();
 }
+
 export async function fetchHistorico(recorridoId) {
   const res = await fetch(API + '/recorridos/' + recorridoId + '/historico');
+  return res.json();
+}
+
+export async function checkSuperposicion(geojson, excludeId) {
+  const params = new URLSearchParams({ geojson });
+  if (excludeId) params.append('excludeId', excludeId);
+  const res = await fetch(API + '/zonas/superpone?' + params);
   return res.json();
 }
