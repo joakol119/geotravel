@@ -5,6 +5,7 @@ import ImagePicker from './components/ImagePicker';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
+import 'leaflet.heat';
 
 const ESTADO_COLORS = { disponible: '#1D9E75', fuera_de_estacion: '#BA7517', pendiente: '#378ADD', cancelado: '#E24B4A' };
 const TIPO_ICONS = { cultural: '🏛️', gastronomica: '🍷', natural: '🌿', historica: '📜' };
@@ -61,6 +62,16 @@ function FormModal({ title, fields, values, onChange, onSave, onCancel }) {
   );
 }
 
+function HeatmapLayer({ points }) {
+  const map = useMap();
+  React.useEffect(() => {
+    if (!points || points.length === 0) return;
+    const heat = L.heatLayer(points, { radius: 25, blur: 15, maxZoom: 17, gradient: { 0.4: 'blue', 0.6: 'lime', 0.8: 'yellow', 1: 'red' } }).addTo(map);
+    return () => map.removeLayer(heat);
+  }, [map, points]);
+  return null;
+}
+
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('recorridos');
@@ -90,6 +101,7 @@ export default function App() {
   const [reporte, setReporte] = useState(null);
   const featureGroupRef = useRef(null);
   const [historico, setHistorico] = useState(null);
+  const [showHeatmap, setShowHeatmap] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -356,6 +368,7 @@ export default function App() {
           <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
           <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
           <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
+          <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>🔥 Mapa de calor</button>
         </div>
 
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
@@ -442,6 +455,10 @@ export default function App() {
           {wmsRecorridos && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:recorrido" format="image/png" transparent={true} />}
           {wmsZonas && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:zona_turistica" format="image/png" transparent={true} />}
           {wmsAtracciones && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:atraccion_turistica" format="image/png" transparent={true} />}
+          {showHeatmap && <HeatmapLayer points={[
+            ...atracciones.map(a => { const c = api.geojsonToLatLngs(a.geojson); return Array.isArray(c) && c.length === 2 && !Array.isArray(c[0]) ? [c[0], c[1], 1] : null; }).filter(Boolean),
+            ...recorridos.flatMap(r => { const coords = api.geojsonToLatLngs(r.geojson); return Array.isArray(coords) ? coords.map(c => [c[0], c[1], 0.5]) : []; })
+          ]} />}
           <FlyTo coords={flyTarget} />
 
           <FeatureGroup ref={featureGroupRef}>
