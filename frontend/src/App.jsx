@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup } from 'react-leaflet';
-import { EditControl } from 'react-leaflet-draw';
+import { MapContainer, TileLayer, WMSTileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup } from 'react-leaflet';import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
 import ImagePicker from './components/ImagePicker';
 import 'leaflet/dist/leaflet.css';
@@ -70,6 +69,9 @@ export default function App() {
   const [filtroMes, setFiltroMes] = useState('todos');
   const [showZonas, setShowZonas] = useState(true);
   const [showAtracciones, setShowAtracciones] = useState(true);
+  const [wmsRecorridos, setWmsRecorridos] = useState(false);
+  const [wmsZonas, setWmsZonas] = useState(false);
+  const [wmsAtracciones, setWmsAtracciones] = useState(false);
   const [selected, setSelected] = useState(null);
   const [flyTarget, setFlyTarget] = useState(null);
   const [recorridos, setRecorridos] = useState([]);
@@ -350,6 +352,9 @@ export default function App() {
           )}
           <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>
           <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>
+          <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
+          <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
+          <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
         </div>
 
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
@@ -431,16 +436,18 @@ export default function App() {
             <button onClick={() => setDrawMode(null)} style={{ marginLeft:12, background:'rgba(255,255,255,0.3)', border:'none', color:'white', borderRadius:10, padding:'2px 8px', cursor:'pointer' }}>X</button>
           </div>
         )}
-
-        <MapContainer center={[-34.9100, -56.1880]} zoom={14} className="map-container" zoomControl={false}>
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="OSM CARTO" />
+        <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container">
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="OSM CARTO" />
+          {wmsRecorridos && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:recorrido" format="image/png" transparent={true} />}
+          {wmsZonas && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:zona_turistica" format="image/png" transparent={true} />}
+          {wmsAtracciones && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:atraccion_turistica" format="image/png" transparent={true} />}
           <FlyTo coords={flyTarget} />
 
           <FeatureGroup ref={featureGroupRef}>
             <EditControl position="topright" onCreated={handleCreated} draw={drawOptions} edit={{ edit: false, remove: false }} />
           </FeatureGroup>
 
-          {showZonas && zonas.map(z => {
+          {showZonas && !wmsZonas && zonas.map(z => {
             const coords = api.geojsonToLatLngs(z.geojson);
             return coords.length > 0 ? (
               <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color:'#534AB7', weight:1.5, fillColor:'#AFA9EC', fillOpacity:0.2, dashArray:'5,5' }}
@@ -448,7 +455,7 @@ export default function App() {
             ) : null;
           })}
 
-          {recorridos.map(r => {
+          {!wmsRecorridos && recorridos.map(r => {
             const coords = api.geojsonToLatLngs(r.geojson);
             return coords.length > 0 ? (
               <Polyline key={'r-'+r.id} positions={coords} pathOptions={{ color: ESTADO_COLORS[r.estado]||'#888', weight:4, opacity:0.85 }}
@@ -456,7 +463,7 @@ export default function App() {
             ) : null;
           })}
 
-          {showAtracciones && atracciones.map(a => {
+          {showAtracciones && !wmsAtracciones && atracciones.map(a => {
             const coords = api.geojsonToLatLngs(a.geojson);
             return Array.isArray(coords) && coords.length === 2 && !Array.isArray(coords[0]) ? (
               <Marker key={'a-'+a.id} position={coords} icon={createIcon(CLASIF_ICONS[a.clasificacion]||'📍')}
