@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
 import 'leaflet.heat';
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const ESTADO_COLORS = { disponible: '#1D9E75', fuera_de_estacion: '#BA7517', pendiente: '#378ADD', cancelado: '#E24B4A' };
 const TIPO_ICONS = { cultural: '🏛️', gastronomica: '🍷', natural: '🌿', historica: '📜' };
@@ -666,6 +667,20 @@ export default function App() {
             {selected && selected.type === 'reporte' && (
               <div style={{ padding:16 }}>
                 <h3 style={{ margin:'0 0 12px', fontSize:16 }}>📊 Recorridos por zona</h3>
+                <div style={{ width:'100%', height:200, marginBottom:12 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={selected.data} margin={{ top:5, right:5, bottom:5, left:5 }}>
+                      <XAxis dataKey="nombre" tick={{ fontSize:10 }} interval={0} angle={-20} textAnchor="end" height={50} />
+                      <YAxis allowDecimals={false} tick={{ fontSize:11 }} />
+                      <RechartsTooltip formatter={(value, name) => [value, name === 'total' ? 'Total' : name]} />
+                      <Bar dataKey="total" radius={[4,4,0,0]}>
+                        {selected.data.map((entry, i) => (
+                          <Cell key={i} fill={['#1D9E75','#3B82F6','#F59E0B','#E24B4A','#534AB7'][i % 5]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
                 {selected.data.map((r, i) => (
                   <div key={i} style={{ padding:8, marginBottom:6, background:'#f9f9f6', borderRadius:8, fontSize:13 }}>
                     <div style={{ fontWeight:700 }}>{r.nombre}</div>
