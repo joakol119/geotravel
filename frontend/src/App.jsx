@@ -26,8 +26,8 @@ function FlyTo({ coords }) {
 
 function createIcon(emoji) {
   return L.divIcon({
-    html: '<div style="font-size:22px;text-align:center;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))">' + emoji + '</div>',
-    className: '', iconSize: [30, 30], iconAnchor: [15, 15],
+    html: `<div style="font-size:26px;text-align:center;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">${emoji}</div>`,
+    className: '', iconSize: [34, 34], iconAnchor: [17, 17],
   });
 }
 
@@ -336,6 +336,21 @@ export default function App() {
           )}
         </div>
 
+        <div style={{ padding:'6px 16px', display:'flex', gap:6, borderBottom:'1px solid #f0efe8' }}>
+          <div style={{ flex:1, background:'#E1F5EE', borderRadius:6, padding:'5px 8px', textAlign:'center' }}>
+            <span style={{ fontSize:14, fontWeight:700, color:'#1D9E75' }}>{recorridos.filter(r => r.estado === 'disponible').length}</span>
+            <span style={{ fontSize:8, color:'#0F6E56', fontWeight:600, marginLeft:4, textTransform:'uppercase' }}>activos</span>
+          </div>
+          <div style={{ flex:1, background:'#EEEDFE', borderRadius:6, padding:'5px 8px', textAlign:'center' }}>
+            <span style={{ fontSize:14, fontWeight:700, color:'#6C63FF' }}>{zonas.length}</span>
+            <span style={{ fontSize:8, color:'#534AB7', fontWeight:600, marginLeft:4, textTransform:'uppercase' }}>zonas</span>
+          </div>
+          <div style={{ flex:1, background:'#FFF3E0', borderRadius:6, padding:'5px 8px', textAlign:'center' }}>
+            <span style={{ fontSize:14, fontWeight:700, color:'#F59E0B' }}>{atracciones.length}</span>
+            <span style={{ fontSize:8, color:'#D97706', fontWeight:600, marginLeft:4, textTransform:'uppercase' }}>atracciones</span>
+          </div>
+        </div>
+
         <div className="filters">
           {activeTab === 'recorridos' && (
             <>
@@ -476,16 +491,22 @@ export default function App() {
           {showZonas && !wmsZonas && zonas.map(z => {
             const coords = api.geojsonToLatLngs(z.geojson);
             return coords.length > 0 ? (
-              <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color:'#534AB7', weight:1.5, fillColor:'#AFA9EC', fillOpacity:0.2, dashArray:'5,5' }}
+              <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color:'#6C63FF', weight:2, fillColor:'#6C63FF', fillOpacity:0.08, dashArray:'8,6', lineCap:'round', lineJoin:'round' }}
                 eventHandlers={{ click: () => handleSelect('zona', z, coords) }}><Tooltip sticky>{z.nombre}</Tooltip></Polygon>
             ) : null;
           })}
 
           {!wmsRecorridos && recorridos.map(r => {
             const coords = api.geojsonToLatLngs(r.geojson);
+            const isSelected = selected && selected.type === 'recorrido' && selected.data.id === r.id;
+            const isDimmed = selected && selected.type === 'recorrido' && selected.data.id !== r.id;
             return coords.length > 0 ? (
-              <Polyline key={'r-'+r.id} positions={coords} pathOptions={{ color: ESTADO_COLORS[r.estado]||'#888', weight:4, opacity:0.85 }}
-                eventHandlers={{ click: () => handleSelect('recorrido', r, coords) }}><Tooltip sticky>{r.nombre}</Tooltip></Polyline>
+              <React.Fragment key={'r-'+r.id}>
+                {isSelected && <Polyline positions={coords} pathOptions={{ color: ESTADO_COLORS[r.estado]||'#888', weight:14, opacity:0.2, lineCap:'round', lineJoin:'round' }} />}
+                <Polyline positions={coords} pathOptions={{ color: 'white', weight: isSelected ? 9 : 8, opacity: isDimmed ? 0.4 : 0.9, lineCap:'round', lineJoin:'round' }} />
+                <Polyline positions={coords} pathOptions={{ color: ESTADO_COLORS[r.estado]||'#888', weight: isSelected ? 6 : 5, opacity: isDimmed ? 0.3 : 0.9, lineCap:'round', lineJoin:'round' }}
+                  eventHandlers={{ click: () => handleSelect('recorrido', r, coords) }}><Tooltip sticky>{r.nombre}</Tooltip></Polyline>
+              </React.Fragment>
             ) : null;
           })}
 
