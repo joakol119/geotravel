@@ -218,3 +218,32 @@ export async function checkSuperposicion(geojson, excludeId) {
   const res = await fetch(API + '/zonas/superpone?' + params);
   return res.json();
 }
+
+// ============================================================
+// AUTH
+// ============================================================
+export async function login(email, password) {
+  const res = await fetch(`${API}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export function getToken() {
+  return localStorage.getItem('geotravel_token');
+}
+
+export function setToken(token) {
+  localStorage.setItem('geotravel_token', token);
+}
+
+export function removeToken() {
+  localStorage.removeItem('geotravel_token');
+}
+
+export function isAuthenticated() {
+  return !!localStorage.getItem('geotravel_token');
+}

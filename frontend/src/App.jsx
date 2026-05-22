@@ -1,7 +1,18 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { MapContainer, TileLayer, WMSTileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup } from 'react-leaflet';import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
+// Fix leaflet-draw touchleave bug
+if (typeof window !== 'undefined') {
+  const originalOn = L.DomEvent.on.bind(L.DomEvent);
+  L.DomEvent.on = function(el, types, fn, context) {
+    const filteredTypes = types.split(' ').filter(t => t !== 'touchleave').join(' ');
+    if (!filteredTypes) return L.DomEvent;
+    return originalOn(el, filteredTypes, fn, context);
+  };
+}
+delete L.Browser.touch;
 import ImagePicker from './components/ImagePicker';
+import LoginScreen from './components/LoginScreen';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
@@ -74,6 +85,12 @@ function HeatmapLayer({ points }) {
 }
 
 export default function App() {
+  const [authState, setAuthState] = useState('checking');
+  useEffect(() => {
+    const token = api.getToken();
+    setAuthState(token ? 'admin' : 'login');
+  }, []);
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('recorridos');
   const [filtroEstado, setFiltroEstado] = useState('todos');
@@ -105,6 +122,8 @@ export default function App() {
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
+  const [openTipos, setOpenTipos] = useState(['cultural','gastronomica','natural','historica']);
+  const [openClasif, setOpenClasif] = useState(['museo','teatro','monumento','plaza','gastronomia','playa','parque']);
 
   const loadData = useCallback(async () => {
     try {
@@ -279,10 +298,24 @@ export default function App() {
     circle: false, circlemarker: false, rectangle: false,
   };
 
+  if (authState === 'checking') return null;
+
+  if (authState === 'login') return (
+    <LoginScreen onLogin={(rol) => {
+      if (rol === 'invitado') { setAuthState('invitado'); }
+      else { setAuthState('admin'); }
+    }} />
+  );
+
   if (loading) return <div style={{ display:'flex', height:'100vh', alignItems:'center', justifyContent:'center', fontFamily:'system-ui' }}>Cargando datos...</div>;
 
   return (
     <div className="app">
+      <div style={{ position:'fixed', top:12, right:12, zIndex:9999 }}>
+        <button onClick={() => { api.removeToken(); setAuthState('login'); }} style={{ background:'white', border:'1px solid #d3d1c7', borderRadius:8, cursor:'pointer', fontSize:12, color:'#5f5e5a', padding:'6px 14px', boxShadow:'0 2px 8px rgba(0,0,0,0.1)' }}>
+          {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
+        </button>
+      </div>
       {showForm && (
         <FormModal
           title={editingId ? 'Editar ' + showForm : 'Nuevo ' + showForm}
@@ -301,7 +334,8 @@ export default function App() {
             <div style={{ fontWeight:700, fontSize:16, color:'#2C2C2A' }}>GeoTravel</div>
             <div style={{ fontSize:11, color:'#888780' }}>Sistema de gestion turistica</div>
           </div>
-          <button onClick={() => setSidebarOpen(false)} style={{ marginLeft:'auto', background:'none', border:'none', cursor:'pointer', fontSize:20, color:'#888' }}>x</button>
+          <div style={{ marginLeft:'auto', display:'flex', gap:8, alignItems:'center' }}>
+            </div>
         </div>
 
         <div className="tabs">
@@ -397,18 +431,35 @@ export default function App() {
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
 
         <div className="list">
-          {activeTab === 'recorridos' && recorridos.map(r => (
-            <button key={r.id} className="list-item" onClick={() => handleSelect('recorrido', r, api.geojsonToLatLngs(r.geojson))}>
-              <span style={{ fontSize:20 }}>{TIPO_ICONS[r.tipoExperiencia]||'📍'}</span>
-              <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontWeight:600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{r.nombre}</div>
-                <div style={{ display:'flex', gap:6, marginTop:3 }}>
-                  <span className="tag" style={{ background: ESTADO_COLORS[r.estado]+'20', color: ESTADO_COLORS[r.estado] }}>{r.estado.replace('_',' ')}</span>
-                  {r.duracionEstimada && <span className="tag" style={{ background:'#f0efe8', color:'#5f5e5a' }}>{r.duracionEstimada}</span>}
+          {activeTab === 'recorridos' && ['cultural','gastronomica','natural','historica'].map(tipo => {
+            const items = recorridos.filter(r => r.tipoExperiencia === tipo);
+            if (items.length === 0) return null;
+            const isOpen = openTipos.includes(tipo);
+            return (
+              <div key={tipo} style={{ marginBottom:4 }}>
+                <div onClick={() => setOpenTipos(prev => prev.includes(tipo) ? prev.filter(t => t !== tipo) : [...prev, tipo])}
+                  style={{ padding:'8px 14px', fontSize:11, fontWeight:700, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px', display:'flex', alignItems:'center', gap:6, cursor:'pointer', userSelect:'none', borderRadius:6, transition:'background 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.background='#f5f4f0'}
+                  onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                  <span style={{ fontSize:10, transition:'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>▶</span>
+                  <span style={{ fontSize:16 }}>{TIPO_ICONS[tipo]}</span>
+                  {tipo.charAt(0).toUpperCase() + tipo.slice(1)} <span style={{ color:'#c4c3bc', fontWeight:400 }}>({items.length})</span>
                 </div>
+                {isOpen && items.map(r => (
+                  <button key={r.id} className="list-item" onClick={() => handleSelect('recorrido', r, api.geojsonToLatLngs(r.geojson))}>
+                    <div style={{ width:4, height:28, borderRadius:2, background: ESTADO_COLORS[r.estado]||'#888', flexShrink:0 }} />
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontWeight:600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{r.nombre}</div>
+                      <div style={{ display:'flex', gap:6, marginTop:3 }}>
+                        <span className="tag" style={{ background: ESTADO_COLORS[r.estado]+'20', color: ESTADO_COLORS[r.estado] }}>{r.estado.replace('_',' ')}</span>
+                        {r.duracionEstimada && <span className="tag" style={{ background:'#f0efe8', color:'#5f5e5a' }}>{r.duracionEstimada}</span>}
+                      </div>
+                    </div>
+                  </button>
+                ))}
               </div>
-            </button>
-          ))}
+            );
+          })}
           {activeTab === 'zonas' && (
             <button className="toggle-chip" onClick={async () => {
               try {
@@ -424,12 +475,32 @@ export default function App() {
             </button>
           ))}
 
-          {activeTab === 'atracciones' && atracciones.map(a => (
-            <button key={a.id} className="list-item" onClick={() => handleSelect('atraccion', a, api.geojsonToLatLngs(a.geojson))}>
-              <span style={{ fontSize:20 }}>{CLASIF_ICONS[a.clasificacion]||'📍'}</span>
-              <div><div style={{ fontWeight:600 }}>{a.nombre}</div><span className="tag" style={{ background:'#E1F5EE', color:'#0F6E56' }}>{a.clasificacion}</span></div>
-            </button>
-          ))}
+          {activeTab === 'atracciones' && ['museo','teatro','monumento','plaza','gastronomia','playa','parque'].map(clasif => {
+            const items = atracciones.filter(a => a.clasificacion === clasif);
+            if (items.length === 0) return null;
+            const isOpen = openClasif.includes(clasif);
+            const colors = {museo:'#8B5CF6',teatro:'#EC4899',monumento:'#F59E0B',plaza:'#1D9E75',gastronomia:'#E24B4A',playa:'#3B82F6',parque:'#22C55E'};
+            return (
+              <div key={clasif} style={{ marginBottom:4 }}>
+                <div onClick={() => setOpenClasif(prev => prev.includes(clasif) ? prev.filter(c => c !== clasif) : [...prev, clasif])}
+                  style={{ padding:'8px 14px', fontSize:11, fontWeight:700, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px', display:'flex', alignItems:'center', gap:6, cursor:'pointer', userSelect:'none', borderRadius:6, transition:'background 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.background='#f5f4f0'}
+                  onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                  <span style={{ fontSize:10, transition:'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>▶</span>
+                  <span style={{ fontSize:16 }}>{CLASIF_ICONS[clasif]}</span>
+                  {clasif.charAt(0).toUpperCase() + clasif.slice(1)} <span style={{ color:'#c4c3bc', fontWeight:400 }}>({items.length})</span>
+                </div>
+                {isOpen && items.map(a => (
+                  <button key={a.id} className="list-item" onClick={() => handleSelect('atraccion', a, api.geojsonToLatLngs(a.geojson))}>
+                    <div style={{ width:4, height:28, borderRadius:2, background: colors[clasif]||'#888', flexShrink:0 }} />
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontWeight:600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{a.nombre}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            );
+          })}
 
           {activeTab === 'reporte' && reporte && (
             <div style={{ padding:'8px' }}>
