@@ -198,7 +198,7 @@ export default function App() {
         if (editingId) await api.updateAtraccion(editingId, data);
         else await api.createAtraccion(data);
       }
-      setShowForm(null); setDrawnGeojson(null); setDrawMode(null); setEditingId(null);
+      setShowForm(null); setDrawnGeojson(null); setDrawMode(null); setEditingId(null); setSelected(null);
       await loadData();
     } catch (e) { alert('Error al guardar: ' + e.message); }
   };

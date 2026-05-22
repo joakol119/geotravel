@@ -1,6 +1,14 @@
 // Base URL de la API - en Docker, el proxy redirige a backend:8080
 const API = '/api';
 
+function authHeaders() {
+  const token = localStorage.getItem('geotravel_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+}
+
 // ============================================================
 // RECORRIDOS
 // ============================================================
@@ -15,7 +23,7 @@ export async function fetchRecorridos(estado, tipo, mes) {
 
 export async function createRecorrido(data) {
   const res = await fetch(`${API}/recorridos`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -23,7 +31,7 @@ export async function createRecorrido(data) {
 
 export async function updateRecorrido(id, data) {
   const res = await fetch(`${API}/recorridos/${id}`, {
-    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    method: 'PUT', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -48,7 +56,7 @@ export async function fetchZonas() {
 
 export async function createZona(data) {
   const res = await fetch(`${API}/zonas`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -56,7 +64,7 @@ export async function createZona(data) {
 
 export async function updateZona(id, data) {
   const res = await fetch(`${API}/zonas/${id}`, {
-    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    method: 'PUT', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -76,7 +84,7 @@ export async function fetchAtracciones() {
 
 export async function createAtraccion(data) {
   const res = await fetch(`${API}/atracciones`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -84,7 +92,7 @@ export async function createAtraccion(data) {
 
 export async function updateAtraccion(id, data) {
   const res = await fetch(`${API}/atracciones/${id}`, {
-    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    method: 'PUT', headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -225,7 +233,7 @@ export async function checkSuperposicion(geojson, excludeId) {
 export async function login(email, password) {
   const res = await fetch(`${API}/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({ email, password }),
   });
   if (!res.ok) return null;
