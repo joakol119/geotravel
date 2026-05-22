@@ -122,6 +122,8 @@ export default function App() {
   const [recorridosZona, setRecorridosZona] = useState([]);
   const [atraccionesRecorrido, setAtraccionesRecorrido] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [populares, setPopulares] = useState([]);
+  const [showPopulares, setShowPopulares] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
   const [openTipos, setOpenTipos] = useState(['cultural','gastronomica','natural','historica']);
@@ -330,6 +332,27 @@ export default function App() {
           {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
         </button>
       </div>
+      {showPopulares && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ background:'white', borderRadius:16, padding:24, width:380, maxHeight:'70vh', overflowY:'auto' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <h3 style={{ margin:0, fontSize:16 }}>⭐ Puntos más populares</h3>
+              <button onClick={() => setShowPopulares(false)} style={{ background:'none', border:'none', cursor:'pointer', fontSize:20, color:'#888' }}>×</button>
+            </div>
+            {populares.map((a, i) => (
+              <div key={a.id} onClick={() => { handleSelect('atraccion', a, api.geojsonToLatLngs(a.geojson)); setShowPopulares(false); }}
+                style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 0', borderBottom:'1px solid #f0efe8', cursor:'pointer' }}>
+                <span style={{ fontSize:18, fontWeight:700, color:'#888780', width:24 }}>{i+1}</span>
+                <span style={{ fontSize:24 }}>{CLASIF_ICONS[a.clasificacion]||'📍'}</span>
+                <div>
+                  <div style={{ fontWeight:600, fontSize:14 }}>{a.nombre}</div>
+                  <div style={{ fontSize:12, color:'#888780' }}>{a.clasificacion}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {showForm && (
         <FormModal
           title={editingId ? 'Editar ' + showForm : 'Nuevo ' + showForm}
@@ -429,7 +452,14 @@ export default function App() {
             <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
           )}
           {activeTab === 'atracciones' && (
-            <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
+            <>
+              {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>}
+              <button className={'toggle-chip'} onClick={async () => {
+                const p = await api.fetchPopulares(10);
+                setPopulares(p);
+                setShowPopulares(true);
+              }}>⭐ Populares</button>
+            </>
           )}
           {authState === 'admin' && <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>}
           {authState === 'admin' && <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>}

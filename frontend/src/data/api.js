@@ -260,3 +260,8 @@ export function removeToken() {
 export function isAuthenticated() {
   return !!localStorage.getItem('geotravel_token');
 }
+
+export async function fetchPopulares(limit = 5) {
+  const res = await fetch(`${API}/atracciones/populares?limit=${limit}`);
+  return res.json();
+}
