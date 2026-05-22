@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup } from 'react-leaflet';import { EditControl } from 'react-leaflet-draw';
-import L from 'leaflet';
+import { MapContainer, TileLayer, WMSTileLayer, Polygon, Polyline, Marker, Tooltip, useMap, FeatureGroup, ZoomControl } from 'react-leaflet';
+import { EditControl } from 'react-leaflet-draw';
 // Fix leaflet-draw touchleave bug
 if (typeof window !== 'undefined') {
   const originalOn = L.DomEvent.on.bind(L.DomEvent);
@@ -325,13 +325,8 @@ export default function App() {
 
   if (loading) return <div style={{ display:'flex', height:'100vh', alignItems:'center', justifyContent:'center', fontFamily:'system-ui' }}>Cargando datos...</div>;
 
-  return (
+  return (    
     <div className="app">
-      <div style={{ position:'fixed', top:12, right:12, zIndex:9999 }}>
-        <button onClick={() => { api.removeToken(); setAuthState('login'); }} style={{ background:'white', border:'1px solid #d3d1c7', borderRadius:8, cursor:'pointer', fontSize:12, color:'#5f5e5a', padding:'6px 14px', boxShadow:'0 2px 8px rgba(0,0,0,0.1)' }}>
-          {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
-        </button>
-      </div>
       {showPopulares && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ background:'white', borderRadius:16, padding:24, width:380, maxHeight:'70vh', overflowY:'auto' }}>
@@ -372,7 +367,11 @@ export default function App() {
             <div style={{ fontSize:11, color:'#888780' }}>Sistema de gestion turistica</div>
           </div>
           <div style={{ marginLeft:'auto', display:'flex', gap:8, alignItems:'center' }}>
-            </div>
+            <button onClick={() => { api.removeToken(); setAuthState('login'); }} style={{ background:'none', border:'1px solid #d3d1c7', borderRadius:6, cursor:'pointer', fontSize:11, color:'#888780', padding:'3px 8px' }}>
+              {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
+            </button>
+            <button className="btn-close-sidebar" onClick={() => setSidebarOpen(false)}>✕</button>
+          </div>
         </div>
 
         <div className="tabs">
@@ -577,15 +576,15 @@ export default function App() {
       </div>
 
       <div className="map-area">
-        {!sidebarOpen && <button className="menu-btn" onClick={() => setSidebarOpen(true)}>&#9776;</button>}
-
+        {!sidebarOpen && <button className="menu-btn" onClick={() => setSidebarOpen(true)} style={{ right:'16px', left:'auto' }}>&#9776;</button>}
         {drawMode && (
           <div style={{ position:'absolute', top:16, left:'50%', transform:'translateX(-50%)', zIndex:1000, background:'#534AB7', color:'white', padding:'8px 20px', borderRadius:20, fontSize:13, fontWeight:600, boxShadow:'0 2px 12px rgba(0,0,0,0.2)' }}>
             {drawMode === 'zona' ? 'Dibuja el poligono de la zona' : drawMode === 'recorrido' ? 'Dibuja la linea del recorrido' : 'Pon un marcador para la atraccion'}
             <button onClick={() => setDrawMode(null)} style={{ marginLeft:12, background:'rgba(255,255,255,0.3)', border:'none', color:'white', borderRadius:10, padding:'2px 8px', cursor:'pointer' }}>X</button>
           </div>
         )}
-        <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container">
+        <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container" zoomControl={false}>
+          {(!sidebarOpen || window.innerWidth > 768) && <ZoomControl position="topleft" />}
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="OSM CARTO" />
           {wmsRecorridos && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:recorrido" format="image/png" transparent={true} />}
           {wmsZonas && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:zona_turistica" format="image/png" transparent={true} />}

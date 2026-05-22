@@ -165,7 +165,7 @@ body {
    MENU BUTTON (sidebar closed)
    ============================================================ */
 .menu-btn {
-  position: absolute; top: 16px; left: 16px; z-index: 1000;
+  position: absolute; top: 16px; right: 16px !important; left: auto !important; z-index: 1000; 
   width: 44px; height: 44px; border-radius: 12px; background: white;
   border: 1px solid #e0dfd8; cursor: pointer; font-size: 20px;
   display: flex; align-items: center; justify-content: center;
@@ -271,4 +271,25 @@ button { font-family: 'Inter', system-ui, sans-serif; }
 .recorrido-zona-item:hover {
   background: #eeede8 !important;
   border-radius: 4px;
+}
+
+.btn-close-sidebar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .btn-close-sidebar {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #888;
+  }
+}
+
+@media (max-width: 768px) {
+  .leaflet-container .leaflet-control-zoom {
+    display: none !important;
+  }
 }
