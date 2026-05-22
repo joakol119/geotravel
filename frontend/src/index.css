@@ -265,3 +265,10 @@ button { font-family: 'Inter', system-ui, sans-serif; }
   width: 36px !important;
   height: 36px !important;
 }
+.recorrido-zona-item {
+  transition: background 0.15s;
+}
+.recorrido-zona-item:hover {
+  background: #eeede8 !important;
+  border-radius: 4px;
+}

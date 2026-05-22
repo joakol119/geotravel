@@ -119,6 +119,7 @@ export default function App() {
   const [reporte, setReporte] = useState(null);
   const featureGroupRef = useRef(null);
   const [historico, setHistorico] = useState(null);
+  const [recorridosZona, setRecorridosZona] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
@@ -236,8 +237,14 @@ export default function App() {
     setShowForm(type);
   };
 
-  const handleSelect = useCallback((type, data, coords) => {
+  const handleSelect = useCallback(async (type, data, coords) => {
     setSelected({ type, data }); setHistorico(null); setRutaHaciaRecorrido(null); setRutaInfo(null); setFlyTarget(coords);
+    if (type === 'zona') {
+      try {
+        const rs = await api.fetchRecorridosPorZona(data.id);
+        setRecorridosZona(rs);
+      } catch(e) { setRecorridosZona([]); }
+    }
   }, []);
 
   const handleSearch = async () => {
@@ -684,6 +691,18 @@ export default function App() {
                 <div style={{ fontWeight:700, fontSize:15, marginBottom:4 }}>{selected.data.nombre}</div>
                 <div style={{ fontSize:12, color:'#5f5e5a', marginBottom:6 }}>{selected.data.descripcion}</div>
                 <span className="tag" style={{ background:'#EEEDFE', color:'#534AB7' }}>Atractivo: {selected.data.nivelAtractivo}/5</span>
+                {recorridosZona.length > 0 && (
+                  <div style={{ marginTop:10 }}>
+                    <div style={{ fontSize:11, fontWeight:600, color:'#5f5e5a', marginBottom:4 }}>RECORRIDOS EN ESTA ZONA</div>
+                    {recorridosZona.map(r => (
+                      <div key={r.id} className="recorrido-zona-item" onClick={() => handleSelect('recorrido', r, api.geojsonToLatLngs(r.geojson))} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
+                        <span style={{ width:8, height:8, borderRadius:'50%', background:ESTADO_COLORS[r.estado], display:'inline-block' }}></span>
+                        {r.nombre}
+                        <span style={{ marginLeft:'auto', color:'#888780' }}>→</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div style={{ display:'flex', gap:8, marginTop:12 }}>
                   {authState === 'admin' && <button onClick={() => handleEdit('zona', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
                   {authState === 'admin' && <button onClick={() => handleDelete('zona', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>}
