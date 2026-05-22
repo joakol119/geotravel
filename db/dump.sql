@@ -444,6 +444,7 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 7	4	pendiente	2026-03-01 10:00:00	Recorrido en planificación
 8	6	disponible	2026-05-17 21:32:56.079443	\N
 9	6	cancelado	2026-05-19 17:39:36.2831	\N
+10	4	disponible	2026-05-22 13:12:19.327681	\N
 \.
 
 
@@ -454,12 +455,12 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsable, tipo_experiencia, estado, estacion_inicio, estacion_fin, geom) FROM stdin;
 1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
 2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto.	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
-4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	pendiente	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
 5	prueba A	asd	\N	\N	cultural	pendiente	1	12	0102000020E6100000030000008C6A11514C1A4CC00473F4F8BD7341C070404B57B0174CC02F1686C8E97341C0DC476E4DBA154CC0E96514CB2D7341C0
 3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	fuera_de_estacion	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
 7	parque rodo	paseo	\N	\N	cultural	pendiente	1	12	0102000020E6100000020000009ED2C1FA3F154CC0E469F981AB7441C08EB27E3331154CC026C45C52B57541C0
 8	rambla	\N	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000164CFC51D4154CC0A22AA6D24F7641C01D5A643BDF154CC0B7EC10FFB07541C0
 6	prueba B	\N	\N	\N	cultural	cancelado	1	3	0102000020E6100000020000002C0FD253E4184CC05BEF37DA717341C05EBD8A8C0E184CC023A46E675F7341C0
+4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
 \.
 
 
@@ -574,7 +575,7 @@ SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 10, true);
 -- Name: historico_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historico_estado_id_seq', 9, true);
+SELECT pg_catalog.setval('public.historico_estado_id_seq', 10, true);
 
 
 --

@@ -339,14 +339,12 @@ export default function App() {
         </div>
 
         <div className="tabs">
-          {['recorridos','zonas','atracciones'].map(tab => (
+          {(authState === 'admin' ? ['recorridos','zonas','atracciones'] : ['recorridos']).map(tab => (
             <button key={tab} className={'tab-btn ' + (activeTab === tab ? 'active' : '')} onClick={() => setActiveTab(tab)}>
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
-          <button className={'tab-btn ' + (activeTab === 'reporte' ? 'active' : '')} onClick={() => { setActiveTab('reporte'); handleReporte(); }}>
-            Reporte
-          </button>
+          {authState === 'admin' && <button className={'tab-btn ' + (activeTab === 'reporte' ? 'active' : '')} onClick={() => { setActiveTab('reporte'); handleReporte(); }}>Reporte</button>}
         </div>
 
         {/* Search bar */}
@@ -388,8 +386,7 @@ export default function App() {
         <div className="filters">
           {activeTab === 'recorridos' && (
             <>
-              <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo</button>
-              <select className="filter-select" value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+                {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo</button>}              <select className="filter-select" value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
                 <option value="todos">Todos los estados</option>
                 <option value="disponible">Disponible</option>
                 <option value="pendiente">Pendiente</option>
@@ -420,12 +417,12 @@ export default function App() {
           {activeTab === 'atracciones' && (
             <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
           )}
-          <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>
-          <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>
-          <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
-          <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
-          <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
-          <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>🔥 Mapa de calor</button>
+          {authState === 'admin' && <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>}
+          {authState === 'admin' && <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>}
+          {authState === 'admin' && <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>}
+          {authState === 'admin' && <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>}
+          {authState === 'admin' && <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>}  
+          {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>🔥 Mapa de calor</button>}
         </div>
 
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
@@ -617,19 +614,19 @@ export default function App() {
                   <div><strong>Estacion:</strong> mes {selected.data.estacionInicio} a {selected.data.estacionFin}</div>
                 </div>
                 <div style={{ display:'flex', gap:8, marginTop:12, flexWrap:'wrap' }}>
-                  {NEXT_ESTADO[selected.data.estado] && (
+                  {authState === 'admin' && NEXT_ESTADO[selected.data.estado] && (
                     <button onClick={() => handleAvanzar(selected.data.id)} style={{ padding:'6px 12px', border:'none', borderRadius:6, background:'#1D9E75', color:'white', cursor:'pointer', fontSize:12, fontWeight:600 }}>
                       Avanzar a {NEXT_ESTADO[selected.data.estado].replace('_',' ')}
                     </button>
                   )}
-                  <button onClick={() => handleEdit('recorrido', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>
-                  <button onClick={() => handleDelete('recorrido', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>
-                  <button onClick={async () => {
+                  {authState === 'admin' && <button onClick={() => handleEdit('recorrido', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
+                  {authState === 'admin' && <button onClick={() => handleDelete('recorrido', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>}
+                  {authState === 'admin' && <button onClick={async () => {
                     try {
                       const h = await api.fetchHistorico(selected.data.id);
                       setHistorico(h);
                     } catch(e) { console.error(e); }
-                  }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Histórico</button>
+                  }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Histórico</button>}
                   <button onClick={() => setRutaInfo(rutaInfo ? null : { modo: null })} style={{ padding:'6px 12px', border:'1px solid #1D9E75', borderRadius:6, background:'white', color:'#1D9E75', cursor:'pointer', fontSize:12 }}>📍 ¿Cómo llego?</button>
                 </div>
                 {rutaInfo && !rutaInfo.distancia && (
@@ -688,8 +685,8 @@ export default function App() {
                 <div style={{ fontSize:12, color:'#5f5e5a', marginBottom:6 }}>{selected.data.descripcion}</div>
                 <span className="tag" style={{ background:'#EEEDFE', color:'#534AB7' }}>Atractivo: {selected.data.nivelAtractivo}/5</span>
                 <div style={{ display:'flex', gap:8, marginTop:12 }}>
-                  <button onClick={() => handleEdit('zona', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>
-                  <button onClick={() => handleDelete('zona', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>
+                  {authState === 'admin' && <button onClick={() => handleEdit('zona', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
+                  {authState === 'admin' && <button onClick={() => handleDelete('zona', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>}
                 </div>
               </>
             )}
@@ -710,8 +707,8 @@ export default function App() {
                   <p style={{ fontSize:13, color:'#5f5e5a', marginTop:8 }}>{selected.data.descripcion}</p>
                 )}
                 <div style={{ display:'flex', gap:8, marginTop:12 }}>
-                  <button onClick={() => handleEdit('atraccion', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>
-                  <button onClick={() => handleDelete('atraccion', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>
+                  {authState === 'admin' && <button onClick={() => handleEdit('atraccion', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
+                  {authState === 'admin' && <button onClick={() => handleDelete('atraccion', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>}
                 </div>
               </>
             )}
