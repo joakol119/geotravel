@@ -46,6 +46,11 @@ export async function avanzarEstado(id) {
   return res.json();
 }
 
+export async function fetchAtraccionesPorRecorrido(recorridoId) {
+  const res = await fetch(`${API}/recorridos/${recorridoId}/atracciones`);
+  return res.json();
+}
+
 // ============================================================
 // ZONAS
 // ============================================================

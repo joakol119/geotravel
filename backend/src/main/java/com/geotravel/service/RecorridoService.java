@@ -271,4 +271,28 @@ public class RecorridoService {
             return result;
         }
     }
+    public List<Map<String, Object>> getAtraccionesByRecorrido(int recorridoId) throws SQLException {
+    String sql = "SELECT a.id, a.nombre, a.clasificacion, a.descripcion, " +
+                 "ST_AsGeoJSON(a.geom) AS geojson, ra.orden " +
+                 "FROM atraccion_turistica a " +
+                 "JOIN recorrido_atraccion ra ON ra.atraccion_id = a.id " +
+                 "WHERE ra.recorrido_id = ? ORDER BY ra.orden";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, recorridoId);
+        ResultSet rs = ps.executeQuery();
+        List<Map<String, Object>> result = new ArrayList<>();
+        while (rs.next()) {
+            Map<String, Object> m = new java.util.LinkedHashMap<>();
+            m.put("id", rs.getInt("id"));
+            m.put("nombre", rs.getString("nombre"));
+            m.put("clasificacion", rs.getString("clasificacion"));
+            m.put("descripcion", rs.getString("descripcion"));
+            m.put("geojson", rs.getString("geojson"));
+            m.put("orden", rs.getInt("orden"));
+            result.add(m);
+        }
+        return result;
+    }
+    }
 }

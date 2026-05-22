@@ -107,4 +107,12 @@ public class RecorridoController {
             return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
         }
     }
+    @GET @Path("/{id}/atracciones")
+public Response getAtracciones(@PathParam("id") int id) {
+    try {
+        return Response.ok(service.getAtraccionesByRecorrido(id)).build();
+    } catch (SQLException e) {
+        return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
+    }
+    }
 }

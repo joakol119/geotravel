@@ -120,6 +120,7 @@ export default function App() {
   const featureGroupRef = useRef(null);
   const [historico, setHistorico] = useState(null);
   const [recorridosZona, setRecorridosZona] = useState([]);
+  const [atraccionesRecorrido, setAtraccionesRecorrido] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
@@ -244,6 +245,12 @@ export default function App() {
         const rs = await api.fetchRecorridosPorZona(data.id);
         setRecorridosZona(rs);
       } catch(e) { setRecorridosZona([]); }
+    }
+    if (type === 'recorrido') {
+      try {
+        const as = await api.fetchAtraccionesPorRecorrido(data.id);
+        setAtraccionesRecorrido(as);
+      } catch(e) { setAtraccionesRecorrido([]); }
     }
   }, []);
 
@@ -620,6 +627,17 @@ export default function App() {
                   <div><strong>Tipo:</strong> {selected.data.tipoExperiencia}</div>
                   <div><strong>Estacion:</strong> mes {selected.data.estacionInicio} a {selected.data.estacionFin}</div>
                 </div>
+                {atraccionesRecorrido.length > 0 && (
+                  <div style={{ marginTop:10 }}>
+                    <div style={{ fontSize:11, fontWeight:600, color:'#5f5e5a', marginBottom:4 }}>PUNTOS DE INTERÉS</div>
+                    {atraccionesRecorrido.map(a => (
+                      <div key={a.id} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6 }}>
+                        <span>{CLASIF_ICONS[a.clasificacion] || '📍'}</span>
+                        <span>{a.orden}. {a.nombre}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div style={{ display:'flex', gap:8, marginTop:12, flexWrap:'wrap' }}>
                   {authState === 'admin' && NEXT_ESTADO[selected.data.estado] && (
                     <button onClick={() => handleAvanzar(selected.data.id)} style={{ padding:'6px 12px', border:'none', borderRadius:6, background:'#1D9E75', color:'white', cursor:'pointer', fontSize:12, fontWeight:600 }}>
