@@ -123,6 +123,7 @@ export default function App() {
   const [atraccionesRecorrido, setAtraccionesRecorrido] = useState([]);
   const [atraccionesZona, setAtraccionesZona] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showZonasActivas, setShowZonasActivas] = useState(false);
   const [populares, setPopulares] = useState([]);
   const [showPopulares, setShowPopulares] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
@@ -451,7 +452,13 @@ export default function App() {
             </>
           )}
           {activeTab === 'zonas' && (
-            <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
+            <>
+              {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>}
+              <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => {
+                if (!reporte) await handleReporte();
+                setShowZonasActivas(!showZonasActivas);
+              }}>📊 Zonas activas</button>
+            </>
           )}
           {activeTab === 'atracciones' && (
             <>
@@ -604,9 +611,19 @@ export default function App() {
 
           {showZonas && !wmsZonas && zonas.map(z => {
             const coords = api.geojsonToLatLngs(z.geojson);
+            let fillColor = '#6C63FF';
+            let fillOpacity = 0.08;
+            if (showZonasActivas && reporte) {
+              const r = reporte.find(r => r.id === z.id);
+              const activos = r ? r.disponibles : 0;
+              const max = Math.max(...reporte.map(r => r.disponibles), 1);
+              const intensity = activos / max;
+              fillColor = activos === 0 ? '#cccccc' : `hsl(${120 - intensity * 60}, 70%, ${50 - intensity * 20}%)`;
+              fillOpacity = activos === 0 ? 0.05 : 0.1 + intensity * 0.4;
+            }
             return coords.length > 0 ? (
-              <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color:'#6C63FF', weight:2, fillColor:'#6C63FF', fillOpacity:0.08, dashArray:'8,6', lineCap:'round', lineJoin:'round' }}
-                eventHandlers={{ click: () => handleSelect('zona', z, coords) }}><Tooltip sticky>{z.nombre}</Tooltip></Polygon>
+              <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color: showZonasActivas ? fillColor : '#6C63FF', weight:2, fillColor, fillOpacity, dashArray:'8,6', lineCap:'round', lineJoin:'round' }}
+                eventHandlers={{ click: () => handleSelect('zona', z, coords) }}><Tooltip sticky>{z.nombre} {showZonasActivas && reporte ? `(${reporte.find(r=>r.id===z.id)?.disponibles||0} activos)` : ''}</Tooltip></Polygon>
             ) : null;
           })}
 
