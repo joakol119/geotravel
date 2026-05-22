@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 @Path("/auth")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces("application/json;charset=UTF-8")
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthController {
 

@@ -8,6 +8,7 @@ RUN mvn clean package -DskipTests -B
 
 # --- Etapa 2: correr en Tomcat ---
 FROM tomcat:10.1-jdk17
+ENV JAVA_OPTS="-Dfile.encoding=UTF-8 -Dserver.tomcat.uri-encoding=UTF-8"
 RUN rm -rf /usr/local/tomcat/webapps/*
 COPY --from=build /app/target/geotravel.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080

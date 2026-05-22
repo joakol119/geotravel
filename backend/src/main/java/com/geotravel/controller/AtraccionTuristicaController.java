@@ -15,14 +15,14 @@ import java.util.Map;
 import java.util.UUID;
 
 @Path("/atracciones")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces("application/json;charset=UTF-8")
 @Consumes(MediaType.APPLICATION_JSON)
 public class AtraccionTuristicaController {
 
     private final AtraccionTuristicaService service = new AtraccionTuristicaService();
 
     // Directorio donde se guardan las imágenes subidas
-    private static final String UPLOAD_DIR = "/opt/uploads";
+    private static final String UPLOAD_DIR = "/usr/local/tomcat/webapps/ROOT/uploads";
 
     @GET
     public Response getAll() {
