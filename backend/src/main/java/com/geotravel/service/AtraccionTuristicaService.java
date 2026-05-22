@@ -100,4 +100,19 @@ public class AtraccionTuristicaService {
         a.setGeojson(rs.getString("geojson"));
         return a;
     }
+    public List<AtraccionTuristica> getByZona(int zonaId) throws SQLException {
+    String sql = "SELECT a.id, a.nombre, a.descripcion, a.clasificacion, a.foto_url, " +
+                 "ST_AsGeoJSON(a.geom) AS geojson " +
+                 "FROM atraccion_turistica a " +
+                 "JOIN zona_turistica z ON ST_Contains(z.geom, a.geom) " +
+                 "WHERE z.id = ?";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, zonaId);
+        ResultSet rs = ps.executeQuery();
+        List<AtraccionTuristica> result = new ArrayList<>();
+        while (rs.next()) { result.add(mapRow(rs)); }
+        return result;
+    }
+}
 }

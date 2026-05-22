@@ -130,4 +130,12 @@ public class AtraccionTuristicaController {
             return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
         }
     }
+    @GET @Path("/zona/{zonaId}")
+public Response getByZona(@PathParam("zonaId") int zonaId) {
+    try {
+        return Response.ok(service.getByZona(zonaId)).build();
+    } catch (SQLException e) {
+        return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
+    }
+}
 }

@@ -265,3 +265,8 @@ export async function fetchPopulares(limit = 5) {
   const res = await fetch(`${API}/atracciones/populares?limit=${limit}`);
   return res.json();
 }
+
+export async function fetchAtraccionesPorZona(zonaId) {
+  const res = await fetch(`${API}/atracciones/zona/${zonaId}`);
+  return res.json();
+}

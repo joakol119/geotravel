@@ -121,6 +121,7 @@ export default function App() {
   const [historico, setHistorico] = useState(null);
   const [recorridosZona, setRecorridosZona] = useState([]);
   const [atraccionesRecorrido, setAtraccionesRecorrido] = useState([]);
+  const [atraccionesZona, setAtraccionesZona] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [populares, setPopulares] = useState([]);
   const [showPopulares, setShowPopulares] = useState(false);
@@ -246,7 +247,9 @@ export default function App() {
       try {
         const rs = await api.fetchRecorridosPorZona(data.id);
         setRecorridosZona(rs);
-      } catch(e) { setRecorridosZona([]); }
+        const as = await api.fetchAtraccionesPorZona(data.id);
+        setAtraccionesZona(as);
+      } catch(e) { setRecorridosZona([]); setAtraccionesZona([]); }
     }
     if (type === 'recorrido') {
       try {
@@ -745,6 +748,18 @@ export default function App() {
                       <div key={r.id} className="recorrido-zona-item" onClick={() => handleSelect('recorrido', r, api.geojsonToLatLngs(r.geojson))} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
                         <span style={{ width:8, height:8, borderRadius:'50%', background:ESTADO_COLORS[r.estado], display:'inline-block' }}></span>
                         {r.nombre}
+                        <span style={{ marginLeft:'auto', color:'#888780' }}>→</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {atraccionesZona.length > 0 && (
+                  <div style={{ marginTop:10 }}>
+                    <div style={{ fontSize:11, fontWeight:600, color:'#5f5e5a', marginBottom:4 }}>ATRACCIONES EN ESTA ZONA</div>
+                    {atraccionesZona.map(a => (
+                      <div key={a.id} className="recorrido-zona-item" onClick={() => handleSelect('atraccion', a, api.geojsonToLatLngs(a.geojson))} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
+                        <span>{CLASIF_ICONS[a.clasificacion]||'📍'}</span>
+                        {a.nombre}
                         <span style={{ marginLeft:'auto', color:'#888780' }}>→</span>
                       </div>
                     ))}
