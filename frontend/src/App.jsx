@@ -130,8 +130,8 @@ export default function App() {
   const toggleSection = (s) => setOpenSections(p => ({...p, [s]: !p[s]}));
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
-  const [openTipos, setOpenTipos] = useState(['cultural','gastronomica','natural','historica']);
-  const [openClasif, setOpenClasif] = useState(['museo','teatro','monumento','plaza','gastronomia','playa','parque']);
+  const [openTipos, setOpenTipos] = useState([]);
+  const [openClasif, setOpenClasif] = useState([]);
 
   const loadData = useCallback(async () => {
     try {
