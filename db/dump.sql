@@ -445,6 +445,60 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 8	6	disponible	2026-05-17 21:32:56.079443	\N
 9	6	cancelado	2026-05-19 17:39:36.2831	\N
 10	4	disponible	2026-05-22 13:12:19.327681	\N
+11	3	cancelado	2026-05-22 19:39:56.465923	\N
+12	2	fuera_de_estacion	2026-05-22 19:43:05.459003	\N
+13	2	fuera_de_estacion	2026-05-22 19:43:08.391168	\N
+14	2	fuera_de_estacion	2026-05-22 19:47:40.455519	\N
+15	2	fuera_de_estacion	2026-05-22 19:48:35.084152	\N
+16	2	fuera_de_estacion	2026-05-22 19:50:15.863233	\N
+17	2	fuera_de_estacion	2026-05-22 19:59:22.472527	\N
+18	2	fuera_de_estacion	2026-05-22 19:59:34.14361	\N
+19	2	fuera_de_estacion	2026-05-22 19:59:43.133031	\N
+20	2	fuera_de_estacion	2026-05-22 19:59:46.415167	\N
+21	2	fuera_de_estacion	2026-05-22 20:05:30.285997	\N
+22	2	fuera_de_estacion	2026-05-22 20:05:34.446204	\N
+23	2	fuera_de_estacion	2026-05-22 20:07:10.622969	\N
+24	2	cancelado	2026-05-22 20:07:59.370168	\N
+25	4	fuera_de_estacion	2026-05-22 20:08:11.547392	\N
+26	4	fuera_de_estacion	2026-05-22 20:08:15.618577	\N
+27	1	fuera_de_estacion	2026-05-22 20:08:21.956004	\N
+28	4	fuera_de_estacion	2026-05-22 20:08:25.049172	\N
+29	4	fuera_de_estacion	2026-05-22 20:09:17.218535	\N
+30	4	fuera_de_estacion	2026-05-22 20:10:14.682373	\N
+31	4	fuera_de_estacion	2026-05-22 20:12:07.873576	\N
+32	4	fuera_de_estacion	2026-05-22 20:12:52.541066	\N
+33	1	fuera_de_estacion	2026-05-22 20:15:32.043399	\N
+34	1	fuera_de_estacion	2026-05-22 20:15:38.297128	\N
+35	1	fuera_de_estacion	2026-05-22 20:15:48.9628	\N
+36	1	fuera_de_estacion	2026-05-22 20:17:01.676726	\N
+37	1	fuera_de_estacion	2026-05-22 20:18:20.683181	\N
+38	1	fuera_de_estacion	2026-05-22 22:52:28.47305	\N
+39	1	fuera_de_estacion	2026-05-22 22:53:12.921344	\N
+40	1	fuera_de_estacion	2026-05-22 22:57:23.579002	\N
+41	1	fuera_de_estacion	2026-05-22 22:57:28.552649	\N
+42	1	fuera_de_estacion	2026-05-22 22:57:46.054079	\N
+43	4	fuera_de_estacion	2026-05-22 22:57:49.621025	\N
+44	1	fuera_de_estacion	2026-05-22 22:58:04.57726	\N
+45	1	fuera_de_estacion	2026-05-22 23:00:49.553652	\N
+46	1	fuera_de_estacion	2026-05-22 23:02:34.660608	\N
+47	1	fuera_de_estacion	2026-05-22 23:04:00.035059	\N
+48	1	fuera_de_estacion	2026-05-22 23:06:34.792551	\N
+49	1	fuera_de_estacion	2026-05-22 23:06:39.385047	\N
+50	1	fuera_de_estacion	2026-05-22 23:08:40.880531	\N
+51	1	fuera_de_estacion	2026-05-22 23:16:44.059891	\N
+52	4	fuera_de_estacion	2026-05-22 23:16:57.838319	\N
+53	1	fuera_de_estacion	2026-05-24 13:28:13.435162	\N
+54	1	fuera_de_estacion	2026-05-24 13:28:51.327888	\N
+55	4	fuera_de_estacion	2026-05-24 13:29:44.132296	\N
+56	1	fuera_de_estacion	2026-05-24 13:32:55.958523	\N
+57	4	fuera_de_estacion	2026-05-24 13:33:31.872086	\N
+58	5	disponible	2026-05-24 13:33:36.760645	\N
+59	5	fuera_de_estacion	2026-05-24 13:33:44.620012	\N
+60	7	disponible	2026-05-24 13:33:58.507597	\N
+61	1	fuera_de_estacion	2026-05-24 13:40:50.162792	\N
+62	1	fuera_de_estacion	2026-05-24 13:40:54.80095	\N
+63	8	disponible	2026-05-24 13:41:02.274718	\N
+64	5	cancelado	2026-05-24 13:57:10.612164	\N
 \.
 
 
@@ -453,14 +507,16 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 --
 
 COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsable, tipo_experiencia, estado, estacion_inicio, estacion_fin, geom) FROM stdin;
-1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
-3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	fuera_de_estacion	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
-7	parque rodo	paseo	\N	\N	cultural	pendiente	1	12	0102000020E6100000020000009ED2C1FA3F154CC0E469F981AB7441C08EB27E3331154CC026C45C52B57541C0
-8	rambla	\N	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000164CFC51D4154CC0A22AA6D24F7641C01D5A643BDF154CC0B7EC10FFB07541C0
+5	prueba A	ola como ets 2\npruebas	5	Maria	cultural	cancelado	1	12	0102000020E6100000030000008C6A11514C1A4CC00473F4F8BD7341C070404B57B0174CC02F1686C8E97341C0DC476E4DBA154CC0E96514CB2D7341C0
 6	prueba B	\N	\N	\N	cultural	cancelado	1	3	0102000020E6100000020000002C0FD253E4184CC05BEF37DA717341C05EBD8A8C0E184CC023A46E675F7341C0
+3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	cancelado	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
+2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	cancelado	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
 4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
-2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
-5	prueba A	ola como ets 2\npruebas	5	Maria	cultural	pendiente	1	12	0102000020E6100000030000008C6A11514C1A4CC00473F4F8BD7341C070404B57B0174CC02F1686C8E97341C0DC476E4DBA154CC0E96514CB2D7341C0
+7	parque rodo	paseo	\N	\N	cultural	disponible	1	12	0102000020E6100000020000009ED2C1FA3F154CC0E469F981AB7441C08EB27E3331154CC026C45C52B57541C0
+9	asdfff	\N	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000AF93FAB2B4154CC0410B09185D7641C0B891B245D2144CC007978E39CF7641C0
+10	asddddd	asd	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000F1F44A5986144CC04033880FEC7641C0AA622AFD84134CC0D99942E7357641C0
+1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
+8	rambla	\N	\N	\N	cultural	disponible	1	12	0102000020E610000002000000164CFC51D4154CC0A22AA6D24F7641C01D5A643BDF154CC0B7EC10FFB07541C0
 \.
 
 
@@ -572,7 +628,7 @@ SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 10, true);
 -- Name: historico_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historico_estado_id_seq', 10, true);
+SELECT pg_catalog.setval('public.historico_estado_id_seq', 64, true);
 
 
 --
@@ -586,7 +642,7 @@ SELECT pg_catalog.setval('public.recorrido_atraccion_id_seq', 13, true);
 -- Name: recorrido_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.recorrido_id_seq', 8, true);
+SELECT pg_catalog.setval('public.recorrido_id_seq', 10, true);
 
 
 --

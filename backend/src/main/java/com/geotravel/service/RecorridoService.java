@@ -12,8 +12,7 @@ public class RecorridoService {
 
     private static final Map<String, String> NEXT_ESTADO = Map.of(
         "pendiente", "disponible",
-        "disponible", "fuera_de_estacion",
-        "fuera_de_estacion", "cancelado"
+        "disponible", "cancelado"
     );
 
     // ============================================================
@@ -178,13 +177,16 @@ public class RecorridoService {
     // ============================================================
 
     public Recorrido avanzarEstado(int id) throws SQLException {
-        Recorrido r = getById(id);
-        if (r == null) return null;
+    Recorrido r = getById(id);
+    if (r == null) return null;
 
-        String nuevoEstado = NEXT_ESTADO.get(r.getEstado());
-        if (nuevoEstado == null) return r;
+    String nuevoEstado = NEXT_ESTADO.get(r.getEstado());
+    System.out.println("AVANZAR: id=" + id + " estadoActual=" + r.getEstado() + " nuevoEstado=" + nuevoEstado);
+    if (nuevoEstado == null) return r;
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+    try (Connection conn = DatabaseConnection.getConnection()) {
+        conn.setAutoCommit(false);
+        try {
             PreparedStatement ps1 = conn.prepareStatement(
                 "UPDATE recorrido SET estado = ?::estado_recorrido WHERE id = ?");
             ps1.setString(1, nuevoEstado);
@@ -196,10 +198,15 @@ public class RecorridoService {
             ps2.setInt(1, id);
             ps2.setString(2, nuevoEstado);
             ps2.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
         }
-
-        return getById(id);
     }
+
+    return getById(id);
+}
 
     // ============================================================
     // CONSULTAS GEOGRÁFICAS

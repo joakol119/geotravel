@@ -22,8 +22,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveCont
 const ESTADO_COLORS = { disponible: '#1D9E75', fuera_de_estacion: '#BA7517', pendiente: '#378ADD', cancelado: '#E24B4A' };
 const TIPO_ICONS = { cultural: '🏛️', gastronomica: '🍷', natural: '🌿', historica: '📜' };
 const CLASIF_ICONS = { teatro: '🎭', plaza: '⛲', monumento: '🏛️', gastronomia: '🍖', museo: '🖼️', playa: '🏖️', parque: '🌳' };
-const NEXT_ESTADO = { pendiente: 'disponible', disponible: 'fuera_de_estacion', fuera_de_estacion: 'cancelado' };
-
+const NEXT_ESTADO = { pendiente: 'disponible', disponible: 'cancelado' };
 function FlyTo({ coords }) {
   const map = useMap();
   useEffect(() => {
@@ -139,9 +138,9 @@ export default function App() {
         api.fetchZonas(),
         api.fetchAtracciones(),
       ]);
-      setRecorridos(r);
-      setZonas(z);
-      setAtracciones(a);
+      setRecorridos([...r]);
+      setZonas([...z]);
+      setAtracciones([...a]);
     } catch (e) {
       setError('No se pudo conectar al backend. Asegurate que Docker este corriendo.');
       console.error(e);
@@ -221,8 +220,20 @@ export default function App() {
   };
 
   const handleAvanzar = async (id) => {
-    try { await api.avanzarEstado(id); setSelected(null); await loadData(); }
-    catch (e) { alert('Error al avanzar estado: ' + e.message); }
+    try {
+      await api.avanzarEstado(id);
+      setSelected(null);
+      setFiltroEstado('todos');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const [r, z, a] = await Promise.all([
+        api.fetchRecorridos('todos', filtroTipo, filtroMes),
+        api.fetchZonas(),
+        api.fetchAtracciones(),
+      ]);
+      setRecorridos([...r]);
+      setZonas([...z]);
+      setAtracciones([...a]);
+    } catch (e) { alert('Error al avanzar estado: ' + e.message); }
   };
 
   const handleEdit = (type, item) => {
