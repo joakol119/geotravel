@@ -125,6 +125,7 @@ export default function App() {
   const [showZonasActivas, setShowZonasActivas] = useState(false);
   const [populares, setPopulares] = useState([]);
   const [showPopulares, setShowPopulares] = useState(false);
+  const [showGrafica, setShowGrafica] = useState(false);
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
   const [openTipos, setOpenTipos] = useState(['cultural','gastronomica','natural','historica']);
@@ -235,7 +236,7 @@ export default function App() {
       setAtracciones([...a]);
     } catch (e) { alert('Error al avanzar estado: ' + e.message); }
   };
-
+  
   const handleEdit = (type, item) => {
     setEditingId(item.id);
     setDrawnGeojson(item.geojson);
@@ -360,6 +361,27 @@ export default function App() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+      {showGrafica && reporte && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={() => setShowGrafica(false)}>
+          <div style={{ background:'white', borderRadius:16, padding:24, width:'90%', maxWidth:700 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <h3 style={{ margin:0, fontSize:16 }}>Popularidad de recorridos por zona</h3>
+              <button onClick={() => setShowGrafica(false)} style={{ background:'none', border:'none', cursor:'pointer', fontSize:20, color:'#888' }}>×</button>
+            </div>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={reporte} margin={{ top:4, right:8, left:-20, bottom:60 }}>
+                <XAxis dataKey="nombre" tick={{ fontSize:11 }} interval={0} angle={-30} textAnchor="end" height={60} />
+                <YAxis tick={{ fontSize:11 }} allowDecimals={false} />
+                <RechartsTooltip />
+                <Bar dataKey="disponibles" stackId="a" fill="#1D9E75" name="Disponibles" />
+                <Bar dataKey="pendientes" stackId="a" fill="#378ADD" name="Pendientes" />
+                <Bar dataKey="fueraEstacion" stackId="a" fill="#BA7517" name="Fuera estacion" />
+                <Bar dataKey="cancelados" stackId="a" fill="#E24B4A" name="Cancelados" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}
@@ -566,6 +588,19 @@ export default function App() {
           {activeTab === 'reporte' && reporte && (
             <div style={{ padding:'8px' }}>
               <div style={{ fontSize:13, fontWeight:600, marginBottom:8, color:'#2C2C2A' }}>Recorridos por zona turistica</div>
+              <div onClick={() => setShowGrafica(true)} style={{ cursor:'pointer' }} title="Click para ampliar">
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={reporte} margin={{ top:4, right:8, left:-20, bottom:4 }}>
+                    <XAxis dataKey="nombre" tick={{ fontSize:10 }} interval={0} angle={-20} textAnchor="end" height={40} />
+                    <YAxis tick={{ fontSize:10 }} allowDecimals={false} />
+                    <RechartsTooltip />
+                    <Bar dataKey="disponibles" stackId="a" fill="#1D9E75" name="Disponibles" />
+                    <Bar dataKey="pendientes" stackId="a" fill="#378ADD" name="Pendientes" />
+                    <Bar dataKey="fueraEstacion" stackId="a" fill="#BA7517" name="Fuera estacion" />
+                    <Bar dataKey="cancelados" stackId="a" fill="#E24B4A" name="Cancelados" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
               {reporte.map(r => (
                 <div key={r.id} style={{ padding:12, marginBottom:8, background:'#f9f9f6', borderRadius:8, fontSize:12 }}>
                   <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>{r.nombre}</div>
