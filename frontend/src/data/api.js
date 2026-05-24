@@ -42,10 +42,7 @@ export async function deleteRecorrido(id) {
 }
 
 export async function avanzarEstado(id) {
-  const headers = authHeaders();
-  console.log('avanzarEstado headers:', headers);
-  const res = await fetch(`${API}/recorridos/${id}/avanzar`, { method: 'PUT', headers });
-  console.log('avanzarEstado status:', res.status);
+  const res = await fetch(`${API}/recorridos/${id}/avanzar`, { method: 'PUT', headers: authHeaders() });
   return res.json();
 }
 
