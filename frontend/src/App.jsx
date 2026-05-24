@@ -126,6 +126,8 @@ export default function App() {
   const [populares, setPopulares] = useState([]);
   const [showPopulares, setShowPopulares] = useState(false);
   const [showGrafica, setShowGrafica] = useState(false);
+  const [openSections, setOpenSections] = useState({ filtros: true, capas: true, wms: false, herramientas: true });
+  const toggleSection = (s) => setOpenSections(p => ({...p, [s]: !p[s]}));
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
   const [rutaInfo, setRutaInfo] = useState(null);
   const [openTipos, setOpenTipos] = useState(['cultural','gastronomica','natural','historica']);
@@ -456,59 +458,113 @@ export default function App() {
           </div>
         </div>
 
-        <div className="filters">
+       <div style={{ padding:'0 16px', borderBottom:'1px solid #f0efe8', background:'#fdfcfa', overflow:'hidden', isolation:'isolate' }}>
+        
+          {/* Acciones según tab */}
+          {activeTab === 'recorridos' && authState === 'admin' && (
+            <div style={{ padding:'10px 0 6px' }}>
+              <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo recorrido</button>
+            </div>
+          )}
+          {activeTab === 'zonas' && authState === 'admin' && (
+            <div style={{ padding:'10px 0 6px' }}>
+              <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
+            </div>
+          )}
+          {activeTab === 'atracciones' && authState === 'admin' && (
+            <div style={{ padding:'10px 0 6px' }}>
+              <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
+            </div>
+          )}
+
+          {/* Sección Filtros - solo recorridos */}
           {activeTab === 'recorridos' && (
             <>
-                {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo</button>}              <select className="filter-select" value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
-                <option value="todos">Todos los estados</option>
-                <option value="disponible">Disponible</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="fuera_de_estacion">Fuera de estacion</option>
-                <option value="cancelado">Cancelado</option>
-              </select>
-              <select className="filter-select" value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
-                <option value="todos">Todos los tipos</option>
-                <option value="cultural">Cultural</option>
-                <option value="gastronomica">Gastronomica</option>
-                <option value="natural">Natural</option>
-                <option value="historica">Historica</option>
-              </select>
-              <select className="filter-select" value={filtroMes} onChange={e => setFiltroMes(e.target.value)}>
-                <option value="todos">Toda estacion</option>
-                <option value="1">Enero</option><option value="2">Febrero</option>
-                <option value="3">Marzo</option><option value="4">Abril</option>
-                <option value="5">Mayo</option><option value="6">Junio</option>
-                <option value="7">Julio</option><option value="8">Agosto</option>
-                <option value="9">Septiembre</option><option value="10">Octubre</option>
-                <option value="11">Noviembre</option><option value="12">Diciembre</option>
-              </select>
+              <div onClick={() => toggleSection('filtros')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8', position:'relative', zIndex:2, background:'#fdfcfa' }}>
+                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Filtros</span>
+                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.filtros ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+              </div>
+              {openSections.filtros && (
+                <div style={{ paddingBottom:10, display:'flex', flexDirection:'column', gap:6 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Estado</span>
+                    <select className="filter-select" style={{ flex:1 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+                      <option value="todos">Todos</option>
+                      <option value="disponible">Disponible</option>
+                      <option value="pendiente">Pendiente</option>
+                      <option value="fuera_de_estacion">Fuera de estacion</option>
+                      <option value="cancelado">Cancelado</option>
+                    </select>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Tipo</span>
+                    <select className="filter-select" style={{ flex:1 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
+                      <option value="todos">Todos</option>
+                      <option value="cultural">Cultural</option>
+                      <option value="gastronomica">Gastronomica</option>
+                      <option value="natural">Natural</option>
+                      <option value="historica">Historica</option>
+                    </select>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Mes</span>
+                    <select className="filter-select" style={{ flex:1 }} value={filtroMes} onChange={e => setFiltroMes(e.target.value)}>
+                      <option value="todos">Todos</option>
+                      <option value="1">Enero</option><option value="2">Febrero</option>
+                      <option value="3">Marzo</option><option value="4">Abril</option>
+                      <option value="5">Mayo</option><option value="6">Junio</option>
+                      <option value="7">Julio</option><option value="8">Agosto</option>
+                      <option value="9">Septiembre</option><option value="10">Octubre</option>
+                      <option value="11">Noviembre</option><option value="12">Diciembre</option>
+                    </select>
+                  </div>
+                </div>
+              )}
             </>
           )}
-          {activeTab === 'zonas' && (
+
+          {/* Sección Capas */}
+          <div onClick={() => toggleSection('capas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
+            <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Capas</span>
+            <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.capas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+          </div>
+          {openSections.capas && (
+            <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+              <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>
+              <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>
+            </div>
+          )}
+
+          {/* Sección WMS - solo admin */}
+          {authState === 'admin' && (
             <>
-              {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>}
-              <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => {
-                if (!reporte) await handleReporte();
-                setShowZonasActivas(!showZonasActivas);
-              }}>📊 Zonas activas</button>
+              <div onClick={() => toggleSection('wms')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
+                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>WMS</span>
+                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.wms ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+              </div>
+              {openSections.wms && (
+                <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+                  <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
+                  <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
+                  <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
+                </div>
+              )}
             </>
           )}
-          {activeTab === 'atracciones' && (
-            <>
-              {authState === 'admin' && <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>}
-              <button className={'toggle-chip'} onClick={async () => {
-                const p = await api.fetchPopulares(10);
-                setPopulares(p);
-                setShowPopulares(true);
-              }}>⭐ Populares</button>
-            </>
+
+          {/* Sección Herramientas */}
+          <div onClick={() => toggleSection('herramientas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
+            <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Herramientas</span>
+            <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.herramientas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+          </div>
+          {openSections.herramientas && (
+            <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+              {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>Mapa de calor</button>}
+              {activeTab === 'zonas' && <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => { if (!reporte) await handleReporte(); setShowZonasActivas(!showZonasActivas); }}>Zonas activas</button>}
+              {activeTab === 'atracciones' && <button className={'toggle-chip'} onClick={async () => { const p = await api.fetchPopulares(10); setPopulares(p); setShowPopulares(true); }}>Populares</button>}
+            </div>
           )}
-          {authState === 'admin' && <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>}
-          {authState === 'admin' && <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>}
-          {authState === 'admin' && <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>}
-          {authState === 'admin' && <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>}
-          {authState === 'admin' && <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>}  
-          {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>🔥 Mapa de calor</button>}
+
         </div>
 
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
