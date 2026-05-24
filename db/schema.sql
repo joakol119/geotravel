@@ -317,3 +317,15 @@ INSERT INTO historico_estado (recorrido_id, estado, fecha, observacion) VALUES
 -- SELECT z1.nombre, z2.nombre
 -- FROM zona_turistica z1, zona_turistica z2
 -- WHERE z1.id < z2.id AND ST_Overlaps(z1.geom, z2.geom);
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO usuario (email, password_hash) 
+VALUES ('admin@geotravel.com', 'admin123')
+ON CONFLICT (email) DO NOTHING;

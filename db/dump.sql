@@ -499,6 +499,7 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 62	1	fuera_de_estacion	2026-05-24 13:40:54.80095	\N
 63	8	disponible	2026-05-24 13:41:02.274718	\N
 64	5	cancelado	2026-05-24 13:57:10.612164	\N
+65	1	cancelado	2026-05-24 14:19:15.444066	\N
 \.
 
 
@@ -508,6 +509,7 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 
 COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsable, tipo_experiencia, estado, estacion_inicio, estacion_fin, geom) FROM stdin;
 5	prueba A	ola como ets 2\npruebas	5	Maria	cultural	cancelado	1	12	0102000020E6100000030000008C6A11514C1A4CC00473F4F8BD7341C070404B57B0174CC02F1686C8E97341C0DC476E4DBA154CC0E96514CB2D7341C0
+1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	cancelado	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
 6	prueba B	\N	\N	\N	cultural	cancelado	1	3	0102000020E6100000020000002C0FD253E4184CC05BEF37DA717341C05EBD8A8C0E184CC023A46E675F7341C0
 3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	cancelado	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
 2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	cancelado	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
@@ -515,7 +517,6 @@ COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsa
 7	parque rodo	paseo	\N	\N	cultural	disponible	1	12	0102000020E6100000020000009ED2C1FA3F154CC0E469F981AB7441C08EB27E3331154CC026C45C52B57541C0
 9	asdfff	\N	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000AF93FAB2B4154CC0410B09185D7641C0B891B245D2144CC007978E39CF7641C0
 10	asddddd	asd	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000F1F44A5986144CC04033880FEC7641C0AA622AFD84134CC0D99942E7357641C0
-1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
 8	rambla	\N	\N	\N	cultural	disponible	1	12	0102000020E610000002000000164CFC51D4154CC0A22AA6D24F7641C01D5A643BDF154CC0B7EC10FFB07541C0
 \.
 
@@ -628,7 +629,7 @@ SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 10, true);
 -- Name: historico_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historico_estado_id_seq', 64, true);
+SELECT pg_catalog.setval('public.historico_estado_id_seq', 65, true);
 
 
 --
