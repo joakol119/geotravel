@@ -87,7 +87,8 @@ export default function App() {
   const [authState, setAuthState] = useState('checking');
   useEffect(() => {
     const token = api.getToken();
-    setAuthState(token ? 'admin' : 'login');
+    const state = token ? 'admin' : 'login';
+    setAuthState(state);
   }, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -207,6 +208,7 @@ export default function App() {
         else await api.createAtraccion(data);
       }
       setShowForm(null); setDrawnGeojson(null); setDrawMode(null); setEditingId(null); setSelected(null);
+      if (authState === 'admin') setFiltroEstado('todos');
       await loadData();
     } catch (e) { alert('Error al guardar: ' + e.message); }
   };
@@ -334,10 +336,10 @@ export default function App() {
 
   if (authState === 'checking') return null;
 
-  if (authState === 'login') return (
+ if (authState === 'login') return (
     <LoginScreen onLogin={(rol) => {
-      if (rol === 'invitado') { setAuthState('invitado'); }
-      else { setAuthState('admin'); }
+      if (rol === 'invitado') { setAuthState('invitado'); setFiltroEstado('disponible'); }
+      else { setAuthState('admin'); setFiltroEstado('todos'); }
     }} />
   );
 
@@ -777,6 +779,11 @@ export default function App() {
                   <div><strong>Duracion:</strong> {selected.data.duracionEstimada}</div>
                   <div><strong>Tipo:</strong> {selected.data.tipoExperiencia}</div>
                   <div><strong>Estacion:</strong> mes {selected.data.estacionInicio} a {selected.data.estacionFin}</div>
+                  {selected.data.estado === 'fuera_de_estacion' && (
+                    <div style={{ marginTop:6, padding:'6px 10px', background:'#FAEEDA', borderRadius:6, fontSize:11, color:'#854F0B' }}>
+                      ⚠️ Fuera de temporada — vuelve en {['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][selected.data.estacionInicio - 1]}
+                    </div>
+                  )}
                 </div>
                 {atraccionesRecorrido.length > 0 && (
                   <div style={{ marginTop:10 }}>
