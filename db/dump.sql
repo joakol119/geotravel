@@ -421,11 +421,8 @@ COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, f
 3	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N
 4	Mercado del Puerto	Mercado gastronómico tradicional desde 1868.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N
 5	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García.	museo	0101000020E61000009A99999999194CC08716D9CEF77341C0	\N
-6	Playa Pocitos	Playa urbana más popular de Montevideo.	playa	0101000020E61000004E62105839144CC02FDD2406817541C0	\N
 8	Museo Nacional de Artes Visuales	Principal museo de artes plásticas del Uruguay.	museo	0101000020E61000002FDD240681154CC077BE9F1A2F7541C0	\N
-9	FacArq	Facultad arquitectura	monumento	0101000020E6100000DCA16131EA144CC04930D5CC5A7441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Facultad_de_Arquitectura%2C_Montevideo_38.jpg/330px-Facultad_de_Arquitectura%2C_Montevideo_38.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 7	Faro de Punta Carretas	Faro histórico con vistas panorámicas.	monumento	0101000020E6100000DBF97E6ABC144CC0D9CEF753E37541C0	https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Facultad_de_Ingenier%C3%ADa_%28Uruguay%29.jpg/330px-Facultad_de_Ingenier%C3%ADa_%28Uruguay%29.jpg
-10	Estadio Centenario	Estadio de la Selección Uruguaya	monumento	0101000020E6100000910BCEE0EF134CC0D3DB9F8B867241C0	https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Estadio_centenario_1.JPG/330px-Estadio_centenario_1.JPG
 1	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856.	teatro	0101000020E61000001904560E2D1A4CC05C8FC2F5287441C0	\N
 \.
 
@@ -435,71 +432,19 @@ COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, f
 --
 
 COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM stdin;
-1	1	pendiente	2026-01-15 10:00:00	Recorrido creado
-2	1	disponible	2026-02-01 09:00:00	Aprobado para temporada
-3	2	pendiente	2026-01-20 11:00:00	Recorrido creado
-4	2	disponible	2026-02-01 09:30:00	Aprobado - disponible todo el año
-5	3	pendiente	2026-02-10 14:00:00	Recorrido creado
-6	3	disponible	2026-03-01 08:00:00	Disponible para temporada de verano
 7	4	pendiente	2026-03-01 10:00:00	Recorrido en planificación
-8	6	disponible	2026-05-17 21:32:56.079443	\N
-9	6	cancelado	2026-05-19 17:39:36.2831	\N
 10	4	disponible	2026-05-22 13:12:19.327681	\N
-11	3	cancelado	2026-05-22 19:39:56.465923	\N
-12	2	fuera_de_estacion	2026-05-22 19:43:05.459003	\N
-13	2	fuera_de_estacion	2026-05-22 19:43:08.391168	\N
-14	2	fuera_de_estacion	2026-05-22 19:47:40.455519	\N
-15	2	fuera_de_estacion	2026-05-22 19:48:35.084152	\N
-16	2	fuera_de_estacion	2026-05-22 19:50:15.863233	\N
-17	2	fuera_de_estacion	2026-05-22 19:59:22.472527	\N
-18	2	fuera_de_estacion	2026-05-22 19:59:34.14361	\N
-19	2	fuera_de_estacion	2026-05-22 19:59:43.133031	\N
-20	2	fuera_de_estacion	2026-05-22 19:59:46.415167	\N
-21	2	fuera_de_estacion	2026-05-22 20:05:30.285997	\N
-22	2	fuera_de_estacion	2026-05-22 20:05:34.446204	\N
-23	2	fuera_de_estacion	2026-05-22 20:07:10.622969	\N
-24	2	cancelado	2026-05-22 20:07:59.370168	\N
 25	4	fuera_de_estacion	2026-05-22 20:08:11.547392	\N
 26	4	fuera_de_estacion	2026-05-22 20:08:15.618577	\N
-27	1	fuera_de_estacion	2026-05-22 20:08:21.956004	\N
 28	4	fuera_de_estacion	2026-05-22 20:08:25.049172	\N
 29	4	fuera_de_estacion	2026-05-22 20:09:17.218535	\N
 30	4	fuera_de_estacion	2026-05-22 20:10:14.682373	\N
 31	4	fuera_de_estacion	2026-05-22 20:12:07.873576	\N
 32	4	fuera_de_estacion	2026-05-22 20:12:52.541066	\N
-33	1	fuera_de_estacion	2026-05-22 20:15:32.043399	\N
-34	1	fuera_de_estacion	2026-05-22 20:15:38.297128	\N
-35	1	fuera_de_estacion	2026-05-22 20:15:48.9628	\N
-36	1	fuera_de_estacion	2026-05-22 20:17:01.676726	\N
-37	1	fuera_de_estacion	2026-05-22 20:18:20.683181	\N
-38	1	fuera_de_estacion	2026-05-22 22:52:28.47305	\N
-39	1	fuera_de_estacion	2026-05-22 22:53:12.921344	\N
-40	1	fuera_de_estacion	2026-05-22 22:57:23.579002	\N
-41	1	fuera_de_estacion	2026-05-22 22:57:28.552649	\N
-42	1	fuera_de_estacion	2026-05-22 22:57:46.054079	\N
 43	4	fuera_de_estacion	2026-05-22 22:57:49.621025	\N
-44	1	fuera_de_estacion	2026-05-22 22:58:04.57726	\N
-45	1	fuera_de_estacion	2026-05-22 23:00:49.553652	\N
-46	1	fuera_de_estacion	2026-05-22 23:02:34.660608	\N
-47	1	fuera_de_estacion	2026-05-22 23:04:00.035059	\N
-48	1	fuera_de_estacion	2026-05-22 23:06:34.792551	\N
-49	1	fuera_de_estacion	2026-05-22 23:06:39.385047	\N
-50	1	fuera_de_estacion	2026-05-22 23:08:40.880531	\N
-51	1	fuera_de_estacion	2026-05-22 23:16:44.059891	\N
 52	4	fuera_de_estacion	2026-05-22 23:16:57.838319	\N
-53	1	fuera_de_estacion	2026-05-24 13:28:13.435162	\N
-54	1	fuera_de_estacion	2026-05-24 13:28:51.327888	\N
 55	4	fuera_de_estacion	2026-05-24 13:29:44.132296	\N
-56	1	fuera_de_estacion	2026-05-24 13:32:55.958523	\N
 57	4	fuera_de_estacion	2026-05-24 13:33:31.872086	\N
-58	5	disponible	2026-05-24 13:33:36.760645	\N
-59	5	fuera_de_estacion	2026-05-24 13:33:44.620012	\N
-60	7	disponible	2026-05-24 13:33:58.507597	\N
-61	1	fuera_de_estacion	2026-05-24 13:40:50.162792	\N
-62	1	fuera_de_estacion	2026-05-24 13:40:54.80095	\N
-63	8	disponible	2026-05-24 13:41:02.274718	\N
-64	5	cancelado	2026-05-24 13:57:10.612164	\N
-65	1	cancelado	2026-05-24 14:19:15.444066	\N
 \.
 
 
@@ -508,20 +453,10 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 --
 
 COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsable, tipo_experiencia, estado, estacion_inicio, estacion_fin, geom) FROM stdin;
-5	prueba A	ola como ets 2\npruebas	5	Maria	cultural	cancelado	1	12	0102000020E6100000030000008C6A11514C1A4CC00473F4F8BD7341C070404B57B0174CC02F1686C8E97341C0DC476E4DBA154CC0E96514CB2D7341C0
-1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	cancelado	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
-11	prueba pendiente	a	2	maria	cultural	pendiente	4	6	0102000020E610000002000000E0F42EDE8F194CC0556CCCEB887341C0B2A19BFD81164CC00ED76A0F7B7341C0
-12	asd	asd	asd	asd	cultural	pendiente	3	12	0102000020E6100000020000005516855D14154CC0390EBC5AEE7241C0AD69DE718A164CC053CA6B25747341C0
-13	rector	asd	3	maria	natural	pendiente	3	11	0102000020E610000003000000D5B14AE999164CC0DD7A4D0F0A7441C0DFA5D425E3144CC06DFFCA4A937441C0001AA54BFF144CC00AF65FE7A67341C0
-14	asd	asd	4	Pedro	cultural	pendiente	3	10	0102000020E610000002000000EA04341136164CC0A321E3512A7341C024B4E55C8A174CC0A8380EBC5A7241C0
-6	prueba B	\N	\N	\N	cultural	cancelado	1	3	0102000020E6100000020000002C0FD253E4184CC05BEF37DA717341C05EBD8A8C0E184CC023A46E675F7341C0
-3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	cancelado	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
-2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	cancelado	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
+1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
+2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
+3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	fuera_de_estacion	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
 4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
-7	parque rodo	paseo	\N	\N	cultural	disponible	1	12	0102000020E6100000020000009ED2C1FA3F154CC0E469F981AB7441C08EB27E3331154CC026C45C52B57541C0
-9	asdfff	\N	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000AF93FAB2B4154CC0410B09185D7641C0B891B245D2144CC007978E39CF7641C0
-10	asddddd	asd	\N	\N	cultural	pendiente	1	12	0102000020E610000002000000F1F44A5986144CC04033880FEC7641C0AA622AFD84134CC0D99942E7357641C0
-8	rambla	\N	\N	\N	cultural	disponible	1	12	0102000020E610000002000000164CFC51D4154CC0A22AA6D24F7641C01D5A643BDF154CC0B7EC10FFB07541C0
 \.
 
 
@@ -539,7 +474,6 @@ COPY public.recorrido_atraccion (id, recorrido_id, atraccion_id, orden) FROM std
 7	2	4	3
 8	3	8	1
 9	3	7	2
-10	3	6	3
 11	4	1	1
 12	4	5	2
 13	4	8	3
@@ -568,10 +502,7 @@ COPY public.usuario (id, email, password_hash, activo, created_at) FROM stdin;
 --
 
 COPY public.zona_turistica (id, nombre, descripcion, nivel_atractivo, observaciones, geom) FROM stdin;
-2	Rambla de Pocitos	Paseo costero con playas, parques y gastronomía.	2	Ideal para recorridos al aire libre.	0103000020E6100000010000000500000085EB51B81E154CC085EB51B81E7541C085EB51B81E154CC0BC749318047641C03333333333134CC0BC749318047641C03333333333134CC085EB51B81E7541C085EB51B81E154CC085EB51B81E7541C0
-6	cba	prueba	3	a	0103000020E61000000100000006000000F8E3F6CB27194CC00B62A06B5F7441C070B20DDC81184CC04277499C157541C0386BF0BE2A174CC086ADD9CA4B7441C0098D60E3FA174CC03448C153C87341C0317BD976DA184CC066BFEE74E77341C0F8E3F6CB27194CC00B62A06B5F7441C0
-7	Parque Batlle	\N	4	Parque Nacional de Uruguay	0103000020E6100000010000000B000000672C9ACE4E144CC0F25D4A5D327241C0B858518369144CC057EE0566857241C08E40BCAE5F144CC068588CBAD67241C0CAA7C7B60C144CC0B0C91AF5107341C0AB96749483134CC03AB01C21037341C034BE2F2E55134CC0EA77616BB67241C0338AE59656134CC086E7A562637241C069C36169E0134CC0CE1951DA1B7241C090A339B2F2134CC0D53E1D8F197241C0A12B11A8FE134CC059518369187241C0672C9ACE4E144CC0F25D4A5D327241C0
-9	a	a	2	a	0103000020E61000000100000005000000BA30D28BDA174CC052280B5F5F7341C036035C902D174CC00322C495B37341C097E2AAB2EF164CC01B2E724F577341C0D0B7054B75174CC06C787AA52C7341C0BA30D28BDA174CC052280B5F5F7341C0
+15	Ciudad Vieja	Barrio histórico de Montevideo, cuna de la ciudad. Concentra la mayor parte del patrimonio arquitectónico colonial, museos, teatros y la vida cultural de la capital.\n	1	Mayor concentración de atractivos culturales de Montevideo.	0103000020E6100000010000000D000000CBA145B6F3194CC098BD6C3B6D7341C00305DEC9A7194CC015C616821C7441C003D19332A9194CC0B91798158A7441C0EC1516DC0F1A4CC0821DFF05827441C017D4B7CCE91A4CC068CD8FBFB47441C02429E961681B4CC03CD9CD8C7E7441C022C154336B1B4CC05055A181587441C09F05A1BC8F1B4CC0EBC4E578057441C0C9AB730CC81A4CC0BE2EC37FBA7341C0D7F6764B721A4CC0C4B12E6EA37341C0B54E5C8E571A4CC00803CFBD877341C03FAA61BF271A4CC092E9D0E9797341C0CBA145B6F3194CC098BD6C3B6D7341C0
 \.
 
 
@@ -634,7 +565,7 @@ SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 10, true);
 -- Name: historico_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historico_estado_id_seq', 65, true);
+SELECT pg_catalog.setval('public.historico_estado_id_seq', 66, true);
 
 
 --
@@ -648,7 +579,7 @@ SELECT pg_catalog.setval('public.recorrido_atraccion_id_seq', 13, true);
 -- Name: recorrido_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.recorrido_id_seq', 14, true);
+SELECT pg_catalog.setval('public.recorrido_id_seq', 15, true);
 
 
 --
@@ -662,7 +593,7 @@ SELECT pg_catalog.setval('public.usuario_id_seq', 1, true);
 -- Name: zona_turistica_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.zona_turistica_id_seq', 9, true);
+SELECT pg_catalog.setval('public.zona_turistica_id_seq', 16, true);
 
 
 --

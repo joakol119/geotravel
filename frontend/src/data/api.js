@@ -38,7 +38,7 @@ export async function updateRecorrido(id, data) {
 }
 
 export async function deleteRecorrido(id) {
-  return fetch(`${API}/recorridos/${id}`, { method: 'DELETE' });
+  return fetch(`${API}/recorridos/${id}`, { method: 'DELETE', headers: authHeaders() });
 }
 
 export async function avanzarEstado(id) {
@@ -76,7 +76,7 @@ export async function updateZona(id, data) {
 }
 
 export async function deleteZona(id) {
-  return fetch(`${API}/zonas/${id}`, { method: 'DELETE' });
+  return fetch(`${API}/zonas/${id}`, { method: 'DELETE', headers: authHeaders() });
 }
 
 // ============================================================
@@ -104,7 +104,7 @@ export async function updateAtraccion(id, data) {
 }
 
 export async function deleteAtraccion(id) {
-  return fetch(`${API}/atracciones/${id}`, { method: 'DELETE' });
+  return fetch(`${API}/atracciones/${id}`, { method: 'DELETE', headers: authHeaders() });
 }
 
 // ============================================================
