@@ -54,50 +54,57 @@ public class RecorridoService {
     // ============================================================
 
     public List<Recorrido> getAll(String estado, String tipo, Integer mes) throws SQLException {
-        actualizarEstacionalidad();
+    actualizarEstacionalidad();
 
-        StringBuilder sql = new StringBuilder(
-            "SELECT id, nombre, descripcion, duracion_estimada, guia_responsable, " +
-            "tipo_experiencia, estado, estacion_inicio, estacion_fin, " +
-            "ST_AsGeoJSON(geom) AS geojson FROM recorrido WHERE 1=1"
-        );
-        List<Object> params = new ArrayList<>();
+    StringBuilder sql = new StringBuilder(
+        "SELECT id, nombre, descripcion, duracion_estimada, guia_responsable, " +
+        "tipo_experiencia, " +
+        "CASE " +
+        "  WHEN estado IN ('cancelado', 'pendiente') THEN estado::text " +
+        "  WHEN ? IS NOT NULL AND CASE WHEN estacion_inicio <= estacion_fin " +
+        "    THEN ? BETWEEN estacion_inicio AND estacion_fin " +
+        "    ELSE ? >= estacion_inicio OR ? <= estacion_fin END THEN 'disponible' " +
+        "  WHEN ? IS NOT NULL THEN 'fuera_de_estacion' " +
+        "  ELSE estado::text END AS estado_calculado, " +
+        "estado, estacion_inicio, estacion_fin, " +
+        "ST_AsGeoJSON(geom) AS geojson FROM recorrido WHERE 1=1"
+    );
+    List<Object> params = new ArrayList<>();
+    Integer mesParam = mes;
+    params.add(mesParam); params.add(mesParam); params.add(mesParam); params.add(mesParam); params.add(mesParam);
 
-        if (estado != null && !estado.isEmpty()) {
-            sql.append(" AND estado = ?::estado_recorrido");
-            params.add(estado);
-        }
-        if (tipo != null && !tipo.isEmpty()) {
-            sql.append(" AND tipo_experiencia = ?::tipo_experiencia");
-            params.add(tipo);
-        }
-        if (mes != null && mes >= 1 && mes <= 12) {
-            sql.append(" AND CASE WHEN estacion_inicio <= estacion_fin ");
-            sql.append("THEN ? BETWEEN estacion_inicio AND estacion_fin ");
-            sql.append("ELSE ? >= estacion_inicio OR ? <= estacion_fin END");
-            params.add(mes);
-            params.add(mes);
-            params.add(mes);
-        }
-
-        sql.append(" ORDER BY nombre");
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                Object p = params.get(i);
-                if (p instanceof Integer) {
-                    ps.setInt(i + 1, (Integer) p);
-                } else {
-                    ps.setString(i + 1, (String) p);
-                }
-            }
-            ResultSet rs = ps.executeQuery();
-            List<Recorrido> result = new ArrayList<>();
-            while (rs.next()) { result.add(mapRow(rs)); }
-            return result;
-        }
+    if (estado != null && !estado.isEmpty()) {
+        sql.append(" AND estado = ?::estado_recorrido");
+        params.add(estado);
     }
+    if (tipo != null && !tipo.isEmpty()) {
+        sql.append(" AND tipo_experiencia = ?::tipo_experiencia");
+        params.add(tipo);
+    }
+    if (mes != null && mes >= 1 && mes <= 12) {
+        sql.append(" AND estado NOT IN ('cancelado'::estado_recorrido, 'pendiente'::estado_recorrido)");
+    }
+
+    sql.append(" ORDER BY nombre");
+
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        for (int i = 0; i < params.size(); i++) {
+            Object p = params.get(i);
+            if (p instanceof Integer) ps.setInt(i + 1, (Integer) p);
+            else if (p == null) ps.setNull(i + 1, java.sql.Types.INTEGER);
+            else ps.setString(i + 1, (String) p);
+        }
+        ResultSet rs = ps.executeQuery();
+        List<Recorrido> result = new ArrayList<>();
+        while (rs.next()) {
+            Recorrido r = mapRow(rs);
+            if (mes != null) r.setEstado(rs.getString("estado_calculado"));
+            result.add(r);
+        }
+        return result;
+    }
+}
 
     public List<Recorrido> getAll(String estado, String tipo) throws SQLException {
         return getAll(estado, tipo, null);
@@ -181,7 +188,6 @@ public class RecorridoService {
     if (r == null) return null;
 
     String nuevoEstado = NEXT_ESTADO.get(r.getEstado());
-    System.out.println("AVANZAR: id=" + id + " estadoActual=" + r.getEstado() + " nuevoEstado=" + nuevoEstado);
     if (nuevoEstado == null) return r;
 
     try (Connection conn = DatabaseConnection.getConnection()) {

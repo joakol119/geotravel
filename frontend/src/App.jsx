@@ -338,8 +338,8 @@ export default function App() {
 
  if (authState === 'login') return (
     <LoginScreen onLogin={(rol) => {
-      if (rol === 'invitado') { setAuthState('invitado'); setFiltroEstado('disponible'); }
-      else { setAuthState('admin'); setFiltroEstado('todos'); }
+      if (rol === 'invitado') { setAuthState('invitado'); setFiltroMes(String(new Date().getMonth() + 1)); }
+      else { setAuthState('admin'); setFiltroEstado('todos'); setFiltroMes('todos'); }
     }} />
   );
 
@@ -408,7 +408,7 @@ export default function App() {
             <div style={{ fontSize:11, color:'#888780' }}>Sistema de gestion turistica</div>
           </div>
           <div style={{ marginLeft:'auto', display:'flex', gap:8, alignItems:'center' }}>
-            <button onClick={() => { api.removeToken(); setAuthState('login'); }} style={{ background:'none', border:'1px solid #d3d1c7', borderRadius:6, cursor:'pointer', fontSize:11, color:'#888780', padding:'3px 8px' }}>
+            <button onClick={() => { api.removeToken(); setAuthState('login'); setFiltroMes('todos'); setFiltroEstado('todos'); }} style={{ background:'none', border:'1px solid #d3d1c7', borderRadius:6, cursor:'pointer', fontSize:11, color:'#888780', padding:'3px 8px' }}>
               {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
             </button>
             <button className="btn-close-sidebar" onClick={() => setSidebarOpen(false)}>✕</button>
@@ -573,7 +573,7 @@ export default function App() {
 
         <div className="list">
           {activeTab === 'recorridos' && ['cultural','gastronomica','natural','historica'].map(tipo => {
-            const items = recorridos.filter(r => r.tipoExperiencia === tipo);
+            const items = recorridos.filter(r => r.tipoExperiencia === tipo && (authState === 'admin' || ['disponible','fuera_de_estacion'].includes(r.estado)));
             if (items.length === 0) return null;
             const isOpen = openTipos.includes(tipo);
             return (
@@ -731,7 +731,7 @@ export default function App() {
             ) : null;
           })}
 
-          {!wmsRecorridos && recorridos.map(r => {
+          {!wmsRecorridos && recorridos.filter(r => authState === 'admin' || ['disponible','fuera_de_estacion'].includes(r.estado)).map(r => {
             const coords = api.geojsonToLatLngs(r.geojson);
             const isSelected = selected && selected.type === 'recorrido' && selected.data.id === r.id;
             const isDimmed = selected && selected.type === 'recorrido' && selected.data.id !== r.id;
