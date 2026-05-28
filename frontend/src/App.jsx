@@ -22,8 +22,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveCont
 const ESTADO_COLORS = { disponible: '#1D9E75', fuera_de_estacion: '#BA7517', pendiente: '#378ADD', cancelado: '#E24B4A' };
 const TIPO_ICONS = { cultural: '🏛️', gastronomica: '🍷', natural: '🌿', historica: '📜' };
 const CLASIF_ICONS = { teatro: '🎭', plaza: '⛲', monumento: '🏛️', gastronomia: '🍖', museo: '🖼️', playa: '🏖️', parque: '🌳' };
-const NEXT_ESTADO = { pendiente: 'disponible', disponible: 'cancelado' };
-function FlyTo({ coords }) {
+const NEXT_ESTADO = { pendiente: 'disponible', disponible: 'cancelado', cancelado: 'pendiente' };function FlyTo({ coords }) {
   const map = useMap();
   useEffect(() => {
     if (coords) {
@@ -41,33 +40,38 @@ function createIcon(emoji) {
   });
 }
 
-function FormModal({ title, fields, values, onChange, onSave, onCancel }) {
-  return (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ background:'white', borderRadius:12, padding:24, width:380, maxHeight:'80vh', overflowY:'auto' }}>
-        <h3 style={{ margin:'0 0 16px', fontSize:16 }}>{title}</h3>
-        {fields.map(f => (
-          <div key={f.key} style={{ marginBottom:12 }}>
-            <label style={{ display:'block', fontSize:12, fontWeight:600, marginBottom:4, color:'#5f5e5a' }}>{f.label}</label>
-            {f.type === 'select' ? (
-              <select className="filter-select" style={{ width:'100%' }} value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)}>
-                {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-              ) : f.type === 'image' ? (
-  <ImagePicker value={values[f.key] || ''} onChange={(url) => onChange(f.key, url)} />
-            ) : f.type === 'textarea' ? (
-              <textarea style={{ width:'100%', padding:8, border:'1px solid #d3d1c7', borderRadius:6, fontSize:13, resize:'vertical', minHeight:60, boxSizing:'border-box' }}
-                value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)} />
-            ) : (
-              <input type={f.type||'text'} style={{ width:'100%', padding:8, border:'1px solid #d3d1c7', borderRadius:6, fontSize:13, boxSizing:'border-box' }}
-                value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)} />
-            )}
-          </div>
-        ))}
-        <div style={{ display:'flex', gap:8, justifyContent:'flex-end', marginTop:16 }}>
-          <button onClick={onCancel} style={{ padding:'8px 16px', border:'1px solid #d3d1c7', borderRadius:8, background:'white', cursor:'pointer' }}>Cancelar</button>
-          <button onClick={onSave} style={{ padding:'8px 16px', border:'none', borderRadius:8, background:'#534AB7', color:'white', cursor:'pointer', fontWeight:600 }}>Guardar</button>
+function FormModal({ title, fields, values, onChange, onSave, onCancel, editing, drawMode, onRedraw }) {  return (
+    <div style={{ position:'fixed', top:16, left:16, zIndex:2000, width:380, maxHeight:'80vh', overflowY:'auto', background:'white', borderRadius:12, padding:24, boxShadow:'0 4px 24px rgba(0,0,0,0.25)' }}>
+      <h3 style={{ margin:'0 0 16px', fontSize:16 }}>{title}</h3>
+      {fields.map(f => (
+        <div key={f.key} style={{ marginBottom:12 }}>
+          <label style={{ display:'block', fontSize:12, fontWeight:600, marginBottom:4, color:'#5f5e5a' }}>{f.label}</label>
+          {f.type === 'select' ? (
+            <select className="filter-select" style={{ width:'100%' }} value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)}>
+              {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          ) : f.type === 'image' ? (
+            <ImagePicker value={values[f.key] || ''} onChange={(url) => onChange(f.key, url)} />
+          ) : f.type === 'textarea' ? (
+            <textarea style={{ width:'100%', padding:8, border:'1px solid #d3d1c7', borderRadius:6, fontSize:13, resize:'vertical', minHeight:60, boxSizing:'border-box' }}
+              value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)} />
+          ) : (
+            <input type={f.type||'text'} style={{ width:'100%', padding:8, border:'1px solid #d3d1c7', borderRadius:6, fontSize:13, boxSizing:'border-box' }}
+              value={values[f.key]||''} onChange={e => onChange(f.key, e.target.value)} />
+          )}
         </div>
+      ))}
+      {editing && !drawMode && (
+        <button onClick={onRedraw} style={{ width:'100%', padding:'8px 16px', border:'1px dashed #534AB7', borderRadius:8, background:'#EEEDFE', color:'#534AB7', cursor:'pointer', fontSize:12, fontWeight:600, marginBottom:12 }}>
+          🔄 Redibujar geometría
+        </button>
+      )}
+      {editing && drawMode && (
+        <p style={{ fontSize:11, color:'#1D9E75', margin:'0 0 12px', fontStyle:'italic' }}>✏️ Dibujá en el mapa la nueva geometría.</p>
+      )}
+      <div style={{ display:'flex', gap:8, justifyContent:'flex-end', marginTop:16 }}>
+        <button onClick={onCancel} style={{ padding:'8px 16px', border:'1px solid #d3d1c7', borderRadius:8, background:'white', cursor:'pointer' }}>Cancelar</button>
+        <button onClick={onSave} style={{ padding:'8px 16px', border:'none', borderRadius:8, background:'#534AB7', color:'white', cursor:'pointer', fontWeight:600 }}>Guardar</button>
       </div>
     </div>
   );
@@ -158,9 +162,10 @@ export default function App() {
   const handleCreated = (e) => {
     const geojson = api.layerToGeojson(e.layer);
     setDrawnGeojson(geojson);
-    setShowForm(drawMode);
-    setFormValues({});
-    setEditingId(null);
+    if (!editingId) {
+      setShowForm(drawMode);
+      setFormValues({});
+    }
     if (featureGroupRef.current) featureGroupRef.current.clearLayers();
   };
 
@@ -255,6 +260,7 @@ export default function App() {
       setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
         clasificacion: item.clasificacion, geojson: item.geojson });
     }
+    setSelected(null);
     setShowForm(type);
   };
 
@@ -396,7 +402,10 @@ export default function App() {
           values={formValues}
           onChange={(k, v) => setFormValues(p => ({...p, [k]: v}))}
           onSave={handleSave}
-          onCancel={() => { setShowForm(null); setDrawMode(null); setDrawnGeojson(null); }}
+          onCancel={() => { setShowForm(null); setDrawMode(null); setDrawnGeojson(null); setEditingId(null); }}
+          editing={!!editingId}
+          drawMode={drawMode}
+          onRedraw={() => setDrawMode(showForm)}
         />
       )}
 
@@ -555,17 +564,21 @@ export default function App() {
           )}
 
           {/* Sección Herramientas */}
-          <div onClick={() => toggleSection('herramientas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
-            <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Herramientas</span>
-            <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.herramientas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
-          </div>
-          {openSections.herramientas && (
-            <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
-              {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>Mapa de calor</button>}
-              {activeTab === 'zonas' && <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => { if (!reporte) await handleReporte(); setShowZonasActivas(!showZonasActivas); }}>Zonas activas</button>}
-              {activeTab === 'atracciones' && <button className={'toggle-chip'} onClick={async () => { const p = await api.fetchPopulares(10); setPopulares(p); setShowPopulares(true); }}>Populares</button>}
-            </div>
-          )}
+          {(authState === 'admin' || activeTab === 'zonas' || activeTab === 'atracciones') && (
+            <>
+              <div onClick={() => toggleSection('herramientas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
+                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Herramientas</span>
+                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.herramientas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+              </div>
+              {openSections.herramientas && (
+                <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+                  {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>Mapa de calor</button>}
+                  {activeTab === 'zonas' && <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => { if (!reporte) await handleReporte(); setShowZonasActivas(!showZonasActivas); }}>Zonas activas</button>}
+                  {activeTab === 'atracciones' && <button className={'toggle-chip'} onClick={async () => { const p = await api.fetchPopulares(10); setPopulares(p); setShowPopulares(true); }}>Populares</button>}
+                </div>
+              )}
+            </>
+          )}  
 
         </div>
 
@@ -764,7 +777,7 @@ export default function App() {
 
         {selected && (
           <div className="detail-card">
-            <button className="close-btn" onClick={() => setSelected(null)}>x</button>
+            <button className="close-btn" onClick={() => { setSelected(null); setRutaHaciaRecorrido(null); }}>x</button>
             {selected.type === 'recorrido' && (
               <>
                 <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
@@ -799,7 +812,7 @@ export default function App() {
                 <div style={{ display:'flex', gap:8, marginTop:12, flexWrap:'wrap' }}>
                   {authState === 'admin' && NEXT_ESTADO[selected.data.estado] && (
                     <button onClick={() => handleAvanzar(selected.data.id)} style={{ padding:'6px 12px', border:'none', borderRadius:6, background:'#1D9E75', color:'white', cursor:'pointer', fontSize:12, fontWeight:600 }}>
-                      Avanzar a {NEXT_ESTADO[selected.data.estado].replace('_',' ')}
+                      {selected.data.estado === 'cancelado' ? 'Reactivar' : `Avanzar a ${NEXT_ESTADO[selected.data.estado].replace('_',' ')}`}
                     </button>
                   )}
                   {authState === 'admin' && <button onClick={() => handleEdit('recorrido', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
@@ -967,7 +980,7 @@ export default function App() {
                     <div style={{ fontWeight:600, marginTop:2 }}>Total: {r.total}</div>
                   </div>
                 ))}
-                <button onClick={() => setSelected(null)} style={{ marginTop:8, padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Cerrar</button>
+                <button onClick={() => { setSelected(null); setRutaHaciaRecorrido(null); }} style={{ marginTop:8, padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Cerrar</button>
               </div>
             )}
           </div>

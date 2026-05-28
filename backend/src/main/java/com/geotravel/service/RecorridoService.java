@@ -12,7 +12,8 @@ public class RecorridoService {
 
     private static final Map<String, String> NEXT_ESTADO = Map.of(
         "pendiente", "disponible",
-        "disponible", "cancelado"
+        "disponible", "cancelado",
+        "cancelado", "pendiente"
     );
 
     // ============================================================
