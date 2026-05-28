@@ -172,11 +172,25 @@ public class RecorridoService {
     }
 
     public boolean delete(int id) throws SQLException {
-        String sql = "DELETE FROM recorrido WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                try (PreparedStatement ps = conn.prepareStatement("DELETE FROM recorrido_atraccion WHERE recorrido_id = ?")) {
+                    ps.setInt(1, id); ps.executeUpdate();
+                }
+                try (PreparedStatement ps = conn.prepareStatement("DELETE FROM historico_estado WHERE recorrido_id = ?")) {
+                    ps.setInt(1, id); ps.executeUpdate();
+                }
+                boolean deleted;
+                try (PreparedStatement ps = conn.prepareStatement("DELETE FROM recorrido WHERE id = ?")) {
+                    ps.setInt(1, id); deleted = ps.executeUpdate() > 0;
+                }
+                conn.commit();
+                return deleted;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
         }
     }
 
@@ -283,6 +297,14 @@ public class RecorridoService {
                 result.add(row);
             }
             return result;
+        }
+    }
+    public void deleteHistorico(int recorridoId) throws SQLException {
+        String sql = "DELETE FROM historico_estado WHERE recorrido_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, recorridoId);
+            ps.executeUpdate();
         }
     }
     public List<Map<String, Object>> getAtraccionesByRecorrido(int recorridoId) throws SQLException {

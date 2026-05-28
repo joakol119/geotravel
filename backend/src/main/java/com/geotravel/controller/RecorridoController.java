@@ -107,6 +107,17 @@ public class RecorridoController {
             return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
         }
     }
+
+    @DELETE @Path("/{id}/historico")
+    public Response deleteHistorico(@PathParam("id") int id) {
+        try {
+            service.deleteHistorico(id);
+            return Response.ok("{\"ok\":true}").build();
+        } catch (SQLException e) {
+            return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
+        }
+    }
+    
     @GET @Path("/{id}/atracciones")
 public Response getAtracciones(@PathParam("id") int id) {
     try {

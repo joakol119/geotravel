@@ -822,7 +822,7 @@ export default function App() {
                       const h = await api.fetchHistorico(selected.data.id);
                       setHistorico(h);
                     } catch(e) { console.error(e); }
-                  }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Histórico</button>}
+                  }} style={{ padding:'6px 12px', border:'1px solid #534AB7', borderRadius:6, background:'white', color:'#534AB7', cursor:'pointer', fontSize:12 }}>📋 Historial</button>}
                   <button onClick={() => setRutaInfo(rutaInfo ? null : { modo: null })} style={{ padding:'6px 12px', border:'1px solid #1D9E75', borderRadius:6, background:'white', color:'#1D9E75', cursor:'pointer', fontSize:12 }}>📍 ¿Cómo llego?</button>
                 </div>
                 {rutaInfo && !rutaInfo.distancia && (
@@ -863,7 +863,10 @@ export default function App() {
                 )}
                 {historico && (
                   <div style={{ marginTop:12, padding:10, background:'#f9f9f6', borderRadius:8 }}>
-                    <div style={{ fontWeight:700, fontSize:13, marginBottom:6 }}>Histórico de estados</div>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
+                      <span style={{ fontWeight:700, fontSize:13 }}>Historial de estados</span>
+                      {historico.length > 0 && <button onClick={async () => { await api.deleteHistorico(selected.data.id); setHistorico([]); }} style={{ padding:'3px 8px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:10 }}>Limpiar</button>}
+                    </div>
                     {historico.length === 0 && <div style={{ fontSize:12, color:'#888780' }}>Sin cambios registrados</div>}
                     {historico.map((h, i) => (
                       <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'4px 0', borderBottom:'1px solid #e5e3da', fontSize:12 }}>

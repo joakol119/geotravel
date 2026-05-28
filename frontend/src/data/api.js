@@ -225,6 +225,10 @@ export async function fetchHistorico(recorridoId) {
   return res.json();
 }
 
+export async function deleteHistorico(recorridoId) {
+  await fetch(API + '/recorridos/' + recorridoId + '/historico', { method: 'DELETE', headers: authHeaders() });
+}
+
 export async function checkSuperposicion(geojson, excludeId) {
   const params = new URLSearchParams({ geojson });
   if (excludeId) params.append('excludeId', excludeId);

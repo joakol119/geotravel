@@ -435,15 +435,7 @@ COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, f
 --
 
 COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM stdin;
-67	16	disponible	2026-05-27 18:55:46.158023	\N
-68	16	cancelado	2026-05-27 18:55:49.890736	\N
-69	17	disponible	2026-05-27 19:09:26.52975	\N
-70	17	cancelado	2026-05-27 19:09:30.36148	\N
-71	16	pendiente	2026-05-27 19:18:05.745948	\N
-72	16	disponible	2026-05-27 19:18:16.659251	\N
 7	4	pendiente	2026-03-01 10:00:00	Recorrido en planificación
-73	16	cancelado	2026-05-27 19:18:20.257554	\N
-74	16	pendiente	2026-05-27 19:18:24.273287	\N
 10	4	disponible	2026-05-22 13:12:19.327681	\N
 25	4	fuera_de_estacion	2026-05-22 20:08:11.547392	\N
 \.
@@ -457,8 +449,6 @@ COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsa
 1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
 2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
 3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	fuera_de_estacion	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
-17	pruebaB	pruebaB	3	Maria	cultural	cancelado	2	5	0102000020E610000002000000FD6B79E57A174CC0462234828D7341C0284696CCB1164CC0E29178793A7341C0
-16	prueba	prueba	3	Maria	cultural	pendiente	3	12	0102000020E610000002000000D68BA19C68174CC04241295AB97341C0111956F146164CC09E40D829567341C0
 4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
 \.
 
@@ -574,7 +564,7 @@ SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 16, true);
 -- Name: historico_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historico_estado_id_seq', 74, true);
+SELECT pg_catalog.setval('public.historico_estado_id_seq', 80, true);
 
 
 --
