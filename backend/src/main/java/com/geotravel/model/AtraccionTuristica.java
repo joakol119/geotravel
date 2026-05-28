@@ -25,4 +25,9 @@ public class AtraccionTuristica {
 
     public String getGeojson() { return geojson; }
     public void setGeojson(String geojson) { this.geojson = geojson; }
+
+    private int tiempoEstimado;
+
+    public int getTiempoEstimado() { return tiempoEstimado; }
+    public void setTiempoEstimado(int tiempoEstimado) { this.tiempoEstimado = tiempoEstimado; }
 }

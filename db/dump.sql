@@ -148,7 +148,8 @@ CREATE TABLE public.atraccion_turistica (
     descripcion text,
     clasificacion character varying(100),
     geom public.geometry(Point,4326) NOT NULL,
-    foto_url text
+    foto_url text,
+    tiempo_estimado integer DEFAULT 30
 );
 
 
@@ -416,17 +417,17 @@ ALTER TABLE ONLY public.zona_turistica ALTER COLUMN id SET DEFAULT nextval('publ
 -- Data for Name: atraccion_turistica; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, foto_url) FROM stdin;
-2	Plaza Independencia	Principal plaza de Montevideo con el Mausoleo de Artigas.	plaza	0101000020E61000008B6CE7FBA9194CC079E92631087441C0	\N
-3	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N
-4	Mercado del Puerto	Mercado gastronómico tradicional desde 1868.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N
-5	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García.	museo	0101000020E61000009A99999999194CC08716D9CEF77341C0	\N
-1	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856.	teatro	0101000020E61000001904560E2D1A4CC05C8FC2F5287441C0	\N
-11	Estadio Centenario	 Estadio histórico inaugurado en 1930 para el primer Mundial de Fútbol. Declarado Monumento Histórico Nacional y sede de los partidos más importantes del fútbol uruguayo.	monumento	0101000020E6100000D1764CDD95134CC05E13D21A837241C0	https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Estadio_Centenario_1930.jpg/330px-Estadio_Centenario_1930.jpg
-13	Parque de la Amistad	El Parque de la Amistad es el primer espacio público totalmente inclusivo con accesibilidad universal en Montevideo. Ubicado en el predio de Villa Dolores, está diseñado para que niños, jóvenes y adultos disfruten sin barreras arquitectónicas ni sociales.	parque	0101000020E61000005DFC6D4F90124CC04CA59F70767341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Parque_de_la_Amistad_-_imf8935.jpg/330px-Parque_de_la_Amistad_-_imf8935.jpg
-14	Planetario	Planetario de Montevideo, espacio dedicado a la divulgación de astronomía con proyecciones del cielo nocturno y exposiciones interactivas sobre el universo.	monumento	0101000020E610000087E0B88C9B124CC09E40D829567341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Planetario_2.jpg/330px-Planetario_2.jpg
-16	Universo Pittamiglio - Castillo del Alquimista	Centro cultural ubicado en un castillo único del año 1911, con visitas guiadas y talleres espirituales.	monumento	0101000020E6100000E4F90CA837134CC02041F163CC7541C0	\N
-15	Museo nacional de artes visuales	Información\nEl Museo Nacional de Artes Visuales es la institución que alberga la mayor colección pública de pintura y escultura de Uruguay, así como una destacada selección de arte extranjero. Se encuentra en el Parque Rodó de la ciudad de Montevideo	museo	0101000020E6100000564ACFF412154CC0D331E719FB7441C0	\N
+COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, foto_url, tiempo_estimado) FROM stdin;
+2	Plaza Independencia	Principal plaza de Montevideo con el Mausoleo de Artigas.	plaza	0101000020E61000008B6CE7FBA9194CC079E92631087441C0	\N	30
+3	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N	30
+4	Mercado del Puerto	Mercado gastronómico tradicional desde 1868.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N	30
+5	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García.	museo	0101000020E61000009A99999999194CC08716D9CEF77341C0	\N	30
+1	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856.	teatro	0101000020E61000001904560E2D1A4CC05C8FC2F5287441C0	\N	30
+11	Estadio Centenario	 Estadio histórico inaugurado en 1930 para el primer Mundial de Fútbol. Declarado Monumento Histórico Nacional y sede de los partidos más importantes del fútbol uruguayo.	monumento	0101000020E6100000D1764CDD95134CC05E13D21A837241C0	https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Estadio_Centenario_1930.jpg/330px-Estadio_Centenario_1930.jpg	30
+13	Parque de la Amistad	El Parque de la Amistad es el primer espacio público totalmente inclusivo con accesibilidad universal en Montevideo. Ubicado en el predio de Villa Dolores, está diseñado para que niños, jóvenes y adultos disfruten sin barreras arquitectónicas ni sociales.	parque	0101000020E61000005DFC6D4F90124CC04CA59F70767341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Parque_de_la_Amistad_-_imf8935.jpg/330px-Parque_de_la_Amistad_-_imf8935.jpg	30
+14	Planetario	Planetario de Montevideo, espacio dedicado a la divulgación de astronomía con proyecciones del cielo nocturno y exposiciones interactivas sobre el universo.	monumento	0101000020E610000087E0B88C9B124CC09E40D829567341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Planetario_2.jpg/330px-Planetario_2.jpg	30
+16	Universo Pittamiglio - Castillo del Alquimista	Centro cultural ubicado en un castillo único del año 1911, con visitas guiadas y talleres espirituales.	monumento	0101000020E6100000E4F90CA837134CC02041F163CC7541C0	\N	30
+15	Museo nacional de artes visuales	Información\nEl Museo Nacional de Artes Visuales es la institución que alberga la mayor colección pública de pintura y escultura de Uruguay, así como una destacada selección de arte extranjero. Se encuentra en el Parque Rodó de la ciudad de Montevideo	museo	0101000020E6100000564ACFF412154CC0D331E719FB7441C0	\N	30
 \.
 
 

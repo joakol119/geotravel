@@ -207,6 +207,7 @@ export default function App() {
           nombre: formValues.nombre, descripcion: formValues.descripcion,
           clasificacion: formValues.clasificacion || 'monumento',
           fotoUrl: formValues.fotoUrl || null,
+          tiempoEstimado: parseInt(formValues.tiempoEstimado) || 30,
           geojson: drawnGeojson || formValues.geojson,
         };
         if (editingId) await api.updateAtraccion(editingId, data);
@@ -258,7 +259,7 @@ export default function App() {
         nivelAtractivo: item.nivelAtractivo, observaciones: item.observaciones, geojson: item.geojson });
     } else {
       setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
-        clasificacion: item.clasificacion, geojson: item.geojson });
+        clasificacion: item.clasificacion, tiempoEstimado: item.tiempoEstimado, geojson: item.geojson });
     }
     setSelected(null);
     setShowForm(type);
@@ -920,6 +921,7 @@ export default function App() {
                   <div>
                     <div style={{ fontWeight:700, fontSize:15 }}>{selected.data.nombre}</div>
                     <span className="tag" style={{ background:'#E1F5EE', color:'#0F6E56' }}>{selected.data.clasificacion}</span>
+                    {selected.data.tiempoEstimado && <span className="tag" style={{ background:'#EEF2FF', color:'#534AB7' }}>⏱ {selected.data.tiempoEstimado} min</span>}
                   </div>
                 </div>
                 {selected.data.fotoUrl && (
@@ -929,10 +931,47 @@ export default function App() {
                 {selected.data.descripcion && (
                   <p style={{ fontSize:13, color:'#5f5e5a', marginTop:8 }}>{selected.data.descripcion}</p>
                 )}
-                <div style={{ display:'flex', gap:8, marginTop:12 }}>
+               <div style={{ display:'flex', gap:8, marginTop:12, flexWrap:'wrap' }}>
                   {authState === 'admin' && <button onClick={() => handleEdit('atraccion', selected.data)} style={{ padding:'6px 12px', border:'1px solid #d3d1c7', borderRadius:6, background:'white', cursor:'pointer', fontSize:12 }}>Editar</button>}
                   {authState === 'admin' && <button onClick={() => handleDelete('atraccion', selected.data.id)} style={{ padding:'6px 12px', border:'1px solid #E24B4A', borderRadius:6, background:'white', color:'#E24B4A', cursor:'pointer', fontSize:12 }}>Eliminar</button>}
+                  <button onClick={() => setRutaInfo(rutaInfo ? null : { modo: null })} style={{ padding:'6px 12px', border:'1px solid #1D9E75', borderRadius:6, background:'white', color:'#1D9E75', cursor:'pointer', fontSize:12 }}>📍 ¿Cómo llego?</button>
                 </div>
+                {rutaInfo && !rutaInfo.distancia && (
+                  <div style={{ marginTop:8, display:'flex', gap:6 }}>
+                    {[
+                      { modo:'foot-walking', label:'🚶 A pie', color:'#1D9E75' },
+                      { modo:'driving-car', label:'🚗 Auto', color:'#534AB7' },
+                      { modo:'cycling-regular', label:'🚲 Bici', color:'#F59E0B' },
+                    ].map(m => (
+                      <button key={m.modo} onClick={async () => {
+                        if (!navigator.geolocation) { alert('Tu navegador no soporta GPS'); return; }
+                        navigator.geolocation.getCurrentPosition(async (pos) => {
+                          const origen = `${pos.coords.longitude},${pos.coords.latitude}`;
+                          const coords = JSON.parse(selected.data.geojson).coordinates;
+                          const destino = `${coords[0]},${coords[1]}`;
+                          try {
+                            const res = await fetch(`https://api.openrouteservice.org/v2/directions/${m.modo}?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijc5OTM0MTAwODJmYzRlMzY4MGIzYjAwMmViNTQ3YTI1IiwiaCI6Im11cm11cjY0In0=&start=${origen}&end=${destino}`);
+                            const data = await res.json();
+                            if (data.features && data.features[0]) {
+                              const route = data.features[0];
+                              setRutaHaciaRecorrido(route.geometry.coordinates.map(c => [c[1], c[0]]));
+                              setRutaInfo({ modo: m.label, distancia: (route.properties.summary.distance/1000).toFixed(1), duracion: Math.round(route.properties.summary.duration/60) });
+                            }
+                          } catch(e) { alert('Error calculando ruta'); }
+                        }, () => alert('No se pudo obtener tu ubicación'));
+                      }} style={{ flex:1, padding:'8px 0', border:`2px solid ${m.color}`, borderRadius:8, background:'white', color: m.color, cursor:'pointer', fontSize:12, fontWeight:600, transition:'all 0.15s' }}
+                      onMouseEnter={e => { e.target.style.background = m.color; e.target.style.color = 'white'; }}
+                      onMouseLeave={e => { e.target.style.background = 'white'; e.target.style.color = m.color; }}
+                      >{m.label}</button>
+                    ))}
+                  </div>
+                )}
+                {rutaInfo && rutaInfo.distancia && (
+                  <div style={{ marginTop:8, padding:10, background:'#E1F5EE', borderRadius:8, fontSize:13, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <span>{rutaInfo.modo} · <strong>{rutaInfo.distancia} km</strong> · ⏱ <strong>{rutaInfo.duracion} min</strong></span>
+                    <button onClick={() => { setRutaInfo(null); setRutaHaciaRecorrido(null); }} style={{ background:'none', border:'none', cursor:'pointer', fontSize:14, color:'#888' }}>✕</button>
+                  </div>
+                )}
               </>
             )}
             {selected.type === 'busqueda' && (
