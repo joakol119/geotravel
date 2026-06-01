@@ -96,6 +96,7 @@ export default function App() {
   }, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
   const [activeTab, setActiveTab] = useState('recorridos');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [filtroTipo, setFiltroTipo] = useState('todos');
@@ -343,6 +344,42 @@ export default function App() {
 
   if (authState === 'checking') return null;
 
+  // Modal de bienvenida para invitado
+const WelcomeModal = () => (
+  <div style={{
+    position:'fixed', inset:0, zIndex:9999,
+    background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)',
+    display:'flex', alignItems:'center', justifyContent:'center'
+  }}>
+    <div style={{
+      background:'white', borderRadius:20, padding:'40px 36px',
+      maxWidth:420, width:'90%', textAlign:'center',
+      boxShadow:'0 24px 64px rgba(0,0,0,0.2)'
+    }}>
+      <div style={{
+        width:64, height:64, borderRadius:18, margin:'0 auto 20px',
+        background:'linear-gradient(135deg, #6C63FF 0%, #1D9E75 100%)',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        fontSize:28, boxShadow:'0 8px 24px rgba(108,99,255,0.35)'
+      }}>🗺️</div>
+      <h2 style={{ fontSize:24, fontWeight:800, color:'#2C2C2A', marginBottom:8 }}>
+        Bienvenido a GeoTravel
+      </h2>
+      <p style={{ fontSize:14, color:'#888780', lineHeight:1.6, marginBottom:28 }}>
+        Descubrí recorridos turísticos, atracciones y zonas de interés en Uruguay.
+      </p>
+      <button onClick={() => setShowWelcome(false)} style={{
+        width:'100%', padding:'14px', border:'none', borderRadius:12,
+        background:'linear-gradient(135deg, #6C63FF, #1D9E75)',
+        color:'white', fontWeight:700, fontSize:15, cursor:'pointer',
+        boxShadow:'0 4px 16px rgba(108,99,255,0.3)'
+      }}>
+        Explorar el mapa 🌎
+      </button>
+    </div>
+  </div>
+);
+
  if (authState === 'login') return (
     <LoginScreen onLogin={(rol) => {
       if (rol === 'invitado') { setAuthState('invitado'); setFiltroMes(String(new Date().getMonth() + 1)); }
@@ -354,6 +391,7 @@ export default function App() {
 
   return (    
     <div className="app">
+      {authState === 'invitado' && showWelcome && <WelcomeModal />}
       {showPopulares && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ background:'white', borderRadius:16, padding:24, width:380, maxHeight:'70vh', overflowY:'auto' }}>
@@ -415,7 +453,9 @@ export default function App() {
           <div className="sidebar-logo">G</div>
           <div>
             <div style={{ fontWeight:700, fontSize:16, color:'#2C2C2A' }}>GeoTravel</div>
-            <div style={{ fontSize:11, color:'#888780' }}>Sistema de gestion turistica</div>
+            <div style={{ fontSize:11, color:'#888780' }}>
+  {authState === 'invitado' ? 'Explorá Uruguay' : 'Sistema de gestión turística'}
+</div>
           </div>
           <div style={{ marginLeft:'auto', display:'flex', gap:8, alignItems:'center' }}>
             <button onClick={() => { api.removeToken(); setAuthState('login'); setFiltroMes('todos'); setFiltroEstado('todos'); }} style={{ background:'none', border:'1px solid #d3d1c7', borderRadius:6, cursor:'pointer', fontSize:11, color:'#888780', padding:'3px 8px' }}>
