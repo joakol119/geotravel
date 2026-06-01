@@ -457,12 +457,9 @@ const WelcomeModal = () => (
   {authState === 'invitado' ? 'Explorá Uruguay' : 'Sistema de gestión turística'}
 </div>
           </div>
-          <div style={{ marginLeft:'auto', display:'flex', gap:8, alignItems:'center' }}>
-            <button onClick={() => { api.removeToken(); setAuthState('login'); setFiltroMes('todos'); setFiltroEstado('todos'); }} style={{ background:'none', border:'1px solid #d3d1c7', borderRadius:6, cursor:'pointer', fontSize:11, color:'#888780', padding:'3px 8px' }}>
-              {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
-            </button>
-            <button className="btn-close-sidebar" onClick={() => setSidebarOpen(false)}>✕</button>
-          </div>
+          <button onClick={() => setSidebarOpen(false)} style={{ marginLeft:'auto', background:'none', border:'none', cursor:'pointer', width:36, height:36, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#5f5e5a', transition:'background 0.15s' }} onMouseEnter={e => e.target.style.background='#f0efe8'} onMouseLeave={e => e.target.style.background='none'}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         <div className="tabs">
@@ -740,6 +737,11 @@ const WelcomeModal = () => (
               </div>
             ))}
           </div>
+        </div>
+        <div style={{ padding:'12px 16px', borderTop:'1px solid #f0efe8', marginTop:'auto' }}>
+          <button onClick={() => { api.removeToken(); setAuthState('login'); setFiltroMes('todos'); setFiltroEstado('todos'); setShowWelcome(true); }} style={{ width:'100%', padding:'8px', background:'none', border:'1px solid #d3d1c7', borderRadius:8, cursor:'pointer', fontSize:12, color:'#888780' }}>
+            {authState === 'admin' ? 'Cerrar sesión' : 'Salir'}
+          </button>
         </div>
       </div>
 
