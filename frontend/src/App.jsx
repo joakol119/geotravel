@@ -713,7 +713,7 @@ export default function App() {
         )}
         <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container" zoomControl={false}>
           {(!sidebarOpen || window.innerWidth > 768) && <ZoomControl position="topleft" />}
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="OSM CARTO" />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="OSM CARTO" />
           {wmsRecorridos && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:recorrido" format="image/png" transparent={true} />}
           {wmsZonas && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:zona_turistica" format="image/png" transparent={true} />}
           {wmsAtracciones && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:atraccion_turistica" format="image/png" transparent={true} />}
