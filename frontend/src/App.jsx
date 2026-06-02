@@ -97,7 +97,7 @@ export default function App() {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [activeTab, setActiveTab] = useState('recorridos');
+  const [activeTab, setActiveTab] = useState('general');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroMes, setFiltroMes] = useState('todos');
@@ -138,6 +138,7 @@ export default function App() {
   const [rutaInfo, setRutaInfo] = useState(null);
   const [openTipos, setOpenTipos] = useState([]);
   const [openClasif, setOpenClasif] = useState([]);
+  const [openNivel, setOpenNivel] = useState([]);
 
   const loadData = useCallback(async () => {
     try {
@@ -462,13 +463,17 @@ const WelcomeModal = () => (
           </button>
         </div>
 
-        <div className="tabs">
-          {(authState === 'admin' ? ['recorridos','zonas','atracciones'] : ['recorridos']).map(tab => (
-            <button key={tab} className={'tab-btn ' + (activeTab === tab ? 'active' : '')} onClick={() => setActiveTab(tab)}>
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-          {authState === 'admin' && <button className={'tab-btn ' + (activeTab === 'reporte' ? 'active' : '')} onClick={() => { setActiveTab('reporte'); handleReporte(); }}>Reporte</button>}
+        <div style={{ padding:'6px 0', borderBottom:'1px solid #f0efe8' }}>
+          <button className={'tab-btn ' + (activeTab === 'general' ? 'active' : '')} onClick={() => setActiveTab('general')} style={{ width:'100%', marginBottom:6 }}>
+            🗺️ General
+          </button>
+          <div className="tabs" style={{ marginBottom:0 }}>
+            {(authState === 'admin' ? ['recorridos','zonas','atracciones','reporte'] : ['recorridos']).map(tab => (
+              <button key={tab} className={'tab-btn ' + (activeTab === tab ? 'active' : '')} onClick={() => { setActiveTab(tab); if (tab === 'reporte') handleReporte(); }}>
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Search bar */}
@@ -510,114 +515,120 @@ const WelcomeModal = () => (
        <div style={{ padding:'0 16px', borderBottom:'1px solid #f0efe8', background:'#fdfcfa', overflow:'hidden', isolation:'isolate' }}>
         
           {/* Acciones según tab */}
-          {activeTab === 'recorridos' && authState === 'admin' && (
-            <div style={{ padding:'10px 0 6px' }}>
-              <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo recorrido</button>
-            </div>
-          )}
-          {activeTab === 'zonas' && authState === 'admin' && (
-            <div style={{ padding:'10px 0 6px' }}>
-              <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
-            </div>
-          )}
-          {activeTab === 'atracciones' && authState === 'admin' && (
-            <div style={{ padding:'10px 0 6px' }}>
-              <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
-            </div>
+          {/* ====== TAB GENERAL ====== */}
+          {activeTab === 'general' && (
+            <>
+              {/* Capas */}
+              <div onClick={() => toggleSection('capas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer' }}>
+                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Capas</span>
+                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.capas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+              </div>
+              {openSections.capas && (
+                <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+                  <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>
+                  <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>
+                </div>
+              )}
+              {/* WMS - solo admin */}
+              {authState === 'admin' && (
+                <>
+                  <div onClick={() => toggleSection('wms')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
+                    <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>WMS</span>
+                    <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.wms ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
+                  </div>
+                  {openSections.wms && (
+                    <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
+                      <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
+                      <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
+                      <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
+                    </div>
+                  )}
+                </>
+              )}
+              {/* Mapa de calor - solo admin */}
+              {authState === 'admin' && (
+                <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8 }}>
+                  <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>Mapa de calor</button>
+                </div>
+              )}
+              {/* Filtro mes global */}
+              <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Mes</span>
+                  <select className="filter-select" style={{ flex:1 }} value={filtroMes} onChange={e => setFiltroMes(e.target.value)}>
+                    <option value="todos">Todos</option>
+                    <option value="1">Enero</option><option value="2">Febrero</option>
+                    <option value="3">Marzo</option><option value="4">Abril</option>
+                    <option value="5">Mayo</option><option value="6">Junio</option>
+                    <option value="7">Julio</option><option value="8">Agosto</option>
+                    <option value="9">Septiembre</option><option value="10">Octubre</option>
+                    <option value="11">Noviembre</option><option value="12">Diciembre</option>
+                  </select>
+                </div>
+              </div>
+            </>
           )}
 
-          {/* Sección Filtros - solo recorridos */}
+          {/* ====== TAB RECORRIDOS ====== */}
           {activeTab === 'recorridos' && (
             <>
-              <div onClick={() => toggleSection('filtros')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8', position:'relative', zIndex:2, background:'#fdfcfa' }}>
-                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Filtros</span>
-                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.filtros ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
-              </div>
-              {openSections.filtros && (
-                <div style={{ paddingBottom:10, display:'flex', flexDirection:'column', gap:6 }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Estado</span>
-                    <select className="filter-select" style={{ flex:1 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
-                      <option value="todos">Todos</option>
-                      <option value="disponible">Disponible</option>
-                      <option value="pendiente">Pendiente</option>
-                      <option value="fuera_de_estacion">Fuera de estacion</option>
-                      <option value="cancelado">Cancelado</option>
-                    </select>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Tipo</span>
-                    <select className="filter-select" style={{ flex:1 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
-                      <option value="todos">Todos</option>
-                      <option value="cultural">Cultural</option>
-                      <option value="gastronomica">Gastronomica</option>
-                      <option value="natural">Natural</option>
-                      <option value="historica">Historica</option>
-                    </select>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Mes</span>
-                    <select className="filter-select" style={{ flex:1 }} value={filtroMes} onChange={e => setFiltroMes(e.target.value)}>
-                      <option value="todos">Todos</option>
-                      <option value="1">Enero</option><option value="2">Febrero</option>
-                      <option value="3">Marzo</option><option value="4">Abril</option>
-                      <option value="5">Mayo</option><option value="6">Junio</option>
-                      <option value="7">Julio</option><option value="8">Agosto</option>
-                      <option value="9">Septiembre</option><option value="10">Octubre</option>
-                      <option value="11">Noviembre</option><option value="12">Diciembre</option>
-                    </select>
-                  </div>
+              {authState === 'admin' && (
+                <div style={{ padding:'10px 0 6px' }}>
+                  <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo recorrido</button>
                 </div>
               )}
+              <div style={{ paddingBottom:10, display:'flex', flexDirection:'column', gap:6, borderTop:'0.5px solid #f0efe8', paddingTop:8 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Estado</span>
+                  <select className="filter-select" style={{ flex:1 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+                    <option value="todos">Todos</option>
+                    <option value="disponible">Disponible</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="fuera_de_estacion">Fuera de estacion</option>
+                    <option value="cancelado">Cancelado</option>
+                  </select>
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:11, fontWeight:500, color:'#9c9b95', minWidth:40 }}>Tipo</span>
+                  <select className="filter-select" style={{ flex:1 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
+                    <option value="todos">Todos</option>
+                    <option value="cultural">Cultural</option>
+                    <option value="gastronomica">Gastronomica</option>
+                    <option value="natural">Natural</option>
+                    <option value="historica">Historica</option>
+                  </select>
+                </div>
+              </div>
             </>
           )}
 
-          {/* Sección Capas */}
-          <div onClick={() => toggleSection('capas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
-            <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Capas</span>
-            <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.capas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
-          </div>
-          {openSections.capas && (
-            <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
-              <button className={'toggle-chip ' + (showZonas ? 'active' : '')} onClick={() => setShowZonas(!showZonas)}>Zonas</button>
-              <button className={'toggle-chip ' + (showAtracciones ? 'active' : '')} onClick={() => setShowAtracciones(!showAtracciones)}>Atracciones</button>
-            </div>
-          )}
-
-          {/* Sección WMS - solo admin */}
-          {authState === 'admin' && (
+          {/* ====== TAB ZONAS ====== */}
+          {activeTab === 'zonas' && (
             <>
-              <div onClick={() => toggleSection('wms')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
-                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>WMS</span>
-                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.wms ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
-              </div>
-              {openSections.wms && (
-                <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
-                  <button className={'toggle-chip ' + (wmsRecorridos ? 'active' : '')} onClick={() => setWmsRecorridos(!wmsRecorridos)}>WMS Recorridos</button>
-                  <button className={'toggle-chip ' + (wmsZonas ? 'active' : '')} onClick={() => setWmsZonas(!wmsZonas)}>WMS Zonas</button>
-                  <button className={'toggle-chip ' + (wmsAtracciones ? 'active' : '')} onClick={() => setWmsAtracciones(!wmsAtracciones)}>WMS Atracciones</button>
+              {authState === 'admin' && (
+                <div style={{ padding:'10px 0 6px' }}>
+                  <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
                 </div>
               )}
+              <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8, display:'flex', gap:6, flexWrap:'wrap' }}>
+                <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => { if (!reporte) await handleReporte(); setShowZonasActivas(!showZonasActivas); }}>Zonas activas</button>
+              </div>
             </>
           )}
 
-          {/* Sección Herramientas */}
-          {(authState === 'admin' || activeTab === 'zonas' || activeTab === 'atracciones') && (
+          {/* ====== TAB ATRACCIONES ====== */}
+          {activeTab === 'atracciones' && (
             <>
-              <div onClick={() => toggleSection('herramientas')} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0 6px', cursor:'pointer', borderTop:'0.5px solid #f0efe8' }}>
-                <span style={{ fontSize:11, fontWeight:600, color:'#9c9b95', textTransform:'uppercase', letterSpacing:'0.5px' }}>Herramientas</span>
-                <span style={{ fontSize:13, color:'#9c9b95', transform: openSections.herramientas ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>▾</span>
-              </div>
-              {openSections.herramientas && (
-                <div style={{ paddingBottom:10, display:'flex', gap:6, flexWrap:'wrap' }}>
-                  {authState === 'admin' && <button className={'toggle-chip ' + (showHeatmap ? 'active' : '')} onClick={() => setShowHeatmap(!showHeatmap)}>Mapa de calor</button>}
-                  {activeTab === 'zonas' && <button className={'toggle-chip ' + (showZonasActivas ? 'active' : '')} onClick={async () => { if (!reporte) await handleReporte(); setShowZonasActivas(!showZonasActivas); }}>Zonas activas</button>}
-                  {activeTab === 'atracciones' && <button className={'toggle-chip'} onClick={async () => { const p = await api.fetchPopulares(10); setPopulares(p); setShowPopulares(true); }}>Populares</button>}
+              {authState === 'admin' && (
+                <div style={{ padding:'10px 0 6px' }}>
+                  <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
                 </div>
               )}
+              <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8, display:'flex', gap:6, flexWrap:'wrap' }}>
+                <button className={'toggle-chip'} onClick={async () => { const p = await api.fetchPopulares(10); setPopulares(p); setShowPopulares(true); }}>Populares</button>
+              </div>
             </>
-          )}  
-
+          )}
         </div>
 
         {error && <div style={{ padding:'12px 16px', background:'#FCEBEB', color:'#A32D2D', fontSize:12 }}>{error}</div>}
@@ -660,12 +671,32 @@ const WelcomeModal = () => (
               } catch(e) { console.error(e); }
             }} style={{ marginBottom:8, background:'#EEEDFE', color:'#534AB7', borderColor:'#534AB7', width:'100%' }}>📊 Reporte por zona</button>
           )}
-          {activeTab === 'zonas' && zonas.map(z => (
-            <button key={z.id} className="list-item" onClick={() => handleSelect('zona', z, api.geojsonToLatLngs(z.geojson))}>
-              <div style={{ width:32, height:32, borderRadius:8, background:'#EEEDFE', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'#534AB7' }}>{z.nivelAtractivo}</div>
-              <div><div style={{ fontWeight:600 }}>{z.nombre}</div><div style={{ fontSize:11, color:'#888780' }}>Atractivo: {z.nivelAtractivo}/5</div></div>
-            </button>
-          ))}
+          {activeTab === 'zonas' && [5,4,3,2,1].map(nivel => {
+            const items = zonas.filter(z => z.nivelAtractivo === nivel);
+            if (items.length === 0) return null;
+            const isOpen = openNivel.includes(nivel);
+            return (
+              <div key={nivel} style={{ marginBottom:4 }}>
+                <div onClick={() => setOpenNivel(prev => prev.includes(nivel) ? prev.filter(n => n !== nivel) : [...prev, nivel])}
+                  style={{ padding:'8px 14px', fontSize:11, fontWeight:700, color:'#534AB7', display:'flex', alignItems:'center', gap:8, cursor:'pointer', userSelect:'none', borderRadius:6, transition:'background 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.background='#f5f4f0'}
+                  onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                  <span style={{ fontSize:10, transition:'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', color:'#9c9b95' }}>▶</span>
+                  <span style={{ fontSize:14, color:'#F59E0B' }}>{'★'.repeat(nivel)}{'☆'.repeat(5-nivel)}</span>
+                  <span style={{ fontSize:12, fontWeight:600 }}>
+                    {nivel === 5 ? 'Premium' : nivel === 4 ? 'Muy alta' : nivel === 3 ? 'Alta' : nivel === 2 ? 'Media' : 'Básica'}
+                  </span>
+                  <span style={{ color:'#c4c3bc', fontWeight:400, fontSize:11 }}>({items.length})</span>
+                </div>
+                {isOpen && items.map(z => (
+                  <button key={z.id} className="list-item" onClick={() => handleSelect('zona', z, api.geojsonToLatLngs(z.geojson))}>
+                    <div style={{ width:32, height:32, borderRadius:8, background:'#EEEDFE', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'#534AB7' }}>{z.nivelAtractivo}</div>
+                    <div><div style={{ fontWeight:600 }}>{z.nombre}</div><div style={{ fontSize:11, color:'#888780' }}>Atractivo: {z.nivelAtractivo}/5</div></div>
+                  </button>
+                ))}
+              </div>
+            );
+          })}
 
           {activeTab === 'atracciones' && ['museo','teatro','monumento','plaza','gastronomia','playa','parque'].map(clasif => {
             const items = atracciones.filter(a => a.clasificacion === clasif);
@@ -700,7 +731,7 @@ const WelcomeModal = () => (
               <div onClick={() => setShowGrafica(true)} style={{ cursor:'pointer' }} title="Click para ampliar">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={reporte} margin={{ top:4, right:8, left:-20, bottom:4 }}>
-                    <XAxis dataKey="nombre" tick={{ fontSize:10 }} interval={0} angle={-20} textAnchor="end" height={40} />
+                    <XAxis dataKey="nombre" tick={false} height={4} />
                     <YAxis tick={{ fontSize:10 }} allowDecimals={false} />
                     <RechartsTooltip />
                     <Bar dataKey="disponibles" stackId="a" fill="#1D9E75" name="Disponibles" />
@@ -710,25 +741,64 @@ const WelcomeModal = () => (
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              {reporte.map(r => (
-                <div key={r.id} style={{ padding:12, marginBottom:8, background:'#f9f9f6', borderRadius:8, fontSize:12 }}>
-                  <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>{r.nombre}</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
-                    <span><span style={{ color:'#1D9E75', fontWeight:600 }}>{r.disponibles}</span> disponibles</span>
-                    <span><span style={{ color:'#378ADD', fontWeight:600 }}>{r.pendientes}</span> pendientes</span>
-                    <span><span style={{ color:'#BA7517', fontWeight:600 }}>{r.fueraEstacion}</span> fuera estacion</span>
-                    <span><span style={{ color:'#E24B4A', fontWeight:600 }}>{r.cancelados}</span> cancelados</span>
-                  </div>
-                  <div style={{ marginTop:4, fontWeight:600 }}>Total: {r.total} recorridos</div>
-                </div>
-              ))}
+              <div style={{ textAlign:'center', fontSize:10, color:'#9c9b95', marginTop:4 }}> 🔍Hacé click en el gráfico para ver en detalle</div>
+              {(() => {
+                const conRecorridos = reporte.filter(r => (r.disponibles + r.pendientes + r.fueraEstacion + r.cancelados) > 0);
+                const sinRecorridos = reporte.filter(r => (r.disponibles + r.pendientes + r.fueraEstacion + r.cancelados) === 0);
+                return (
+                  <>
+                    {conRecorridos.map(r => {
+                      const total = r.disponibles + r.pendientes + r.fueraEstacion + r.cancelados;
+                      const isOpen = selected?.type === 'reporteItem' && selected?.data?.id === r.id;
+                      return (
+                        <div key={r.id} onClick={() => setSelected(isOpen ? null : { type:'reporteItem', data: r })}
+                          style={{ padding:'8px 12px', marginBottom:2, background: isOpen ? '#EEEDFE' : '#f9f9f6', borderRadius:8, fontSize:12, cursor:'pointer', transition:'background 0.15s' }}>
+                          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                            <span style={{ fontWeight:600 }}>{r.nombre}</span>
+                            <div style={{ display:'flex', gap:4, alignItems:'center' }}>
+                              <span style={{ fontSize:11, color:'#888780' }}>{total}</span>
+                              <div style={{ display:'flex', gap:2 }}>
+                                {r.disponibles > 0 && <div style={{ width:8, height:8, borderRadius:'50%', background:'#1D9E75' }} />}
+                                {r.pendientes > 0 && <div style={{ width:8, height:8, borderRadius:'50%', background:'#378ADD' }} />}
+                                {r.fueraEstacion > 0 && <div style={{ width:8, height:8, borderRadius:'50%', background:'#BA7517' }} />}
+                                {r.cancelados > 0 && <div style={{ width:8, height:8, borderRadius:'50%', background:'#E24B4A' }} />}
+                              </div>
+                            </div>
+                          </div>
+                          {isOpen && (
+                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4, marginTop:6, paddingTop:6, borderTop:'1px solid #e5e4df' }}>
+                              <span><span style={{ color:'#1D9E75', fontWeight:600 }}>{r.disponibles}</span> disponibles</span>
+                              <span><span style={{ color:'#378ADD', fontWeight:600 }}>{r.pendientes}</span> pendientes</span>
+                              <span><span style={{ color:'#BA7517', fontWeight:600 }}>{r.fueraEstacion}</span> fuera estación</span>
+                              <span><span style={{ color:'#E24B4A', fontWeight:600 }}>{r.cancelados}</span> cancelados</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {sinRecorridos.length > 0 && (
+                      <div onClick={() => setOpenNivel(prev => prev.includes('sin') ? prev.filter(n => n !== 'sin') : [...prev, 'sin'])}
+                        style={{ padding:'8px 12px', fontSize:11, color:'#9c9b95', textAlign:'center', borderTop:'1px solid #f0efe8', marginTop:4, cursor:'pointer', transition:'background 0.15s', borderRadius:6 }}
+                        onMouseEnter={e => e.currentTarget.style.background='#f5f4f0'}
+                        onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                        {openNivel.includes('sin') ? '▾' : '▸'} {sinRecorridos.length} zonas sin recorridos
+                      </div>
+                    )}
+                    {openNivel.includes('sin') && sinRecorridos.map(r => (
+                      <div key={r.id} style={{ padding:'6px 12px', marginBottom:2, background:'#f9f9f6', borderRadius:8, fontSize:12, color:'#9c9b95' }}>
+                        {r.nombre}
+                      </div>
+                    ))}
+                  </>
+                );
+              })()}
               {reporte.length === 0 && <div style={{ color:'#888780', textAlign:'center', padding:20 }}>No hay datos</div>}
             </div>
           )}
           {activeTab === 'reporte' && !reporte && <div style={{ padding:20, textAlign:'center', color:'#888780', fontSize:13 }}>Cargando reporte...</div>}
         </div>
 
-        <div className="legend">
+        <div className="legend" style={{ display: (activeTab === 'recorridos' || activeTab === 'general') ? 'block' : 'none' }}>
           <div style={{ fontWeight:600, marginBottom:6 }}>Estado de recorridos</div>
           <div style={{ display:'flex', flexWrap:'wrap', gap:'4px 12px' }}>
             {Object.entries(ESTADO_COLORS).map(([k, c]) => (
@@ -746,15 +816,15 @@ const WelcomeModal = () => (
       </div>
 
       <div className="map-area">
-        {!sidebarOpen && <button className="menu-btn" onClick={() => setSidebarOpen(true)} style={{ right:'16px', left:'auto' }}>&#9776;</button>}
+        {!sidebarOpen && <button className="menu-btn" onClick={() => setSidebarOpen(true)} style={{ left:'16px', right:'auto' }}>&#9776;</button>}
         {drawMode && (
           <div style={{ position:'absolute', top:16, left:'50%', transform:'translateX(-50%)', zIndex:1000, background:'#534AB7', color:'white', padding:'8px 20px', borderRadius:20, fontSize:13, fontWeight:600, boxShadow:'0 2px 12px rgba(0,0,0,0.2)' }}>
             {drawMode === 'zona' ? 'Dibuja el poligono de la zona' : drawMode === 'recorrido' ? 'Dibuja la linea del recorrido' : 'Pon un marcador para la atraccion'}
             <button onClick={() => setDrawMode(null)} style={{ marginLeft:12, background:'rgba(255,255,255,0.3)', border:'none', color:'white', borderRadius:10, padding:'2px 8px', cursor:'pointer' }}>X</button>
           </div>
         )}
-        <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container" zoomControl={false}>
-          {(!sidebarOpen || window.innerWidth > 768) && <ZoomControl position="topleft" />}
+        <MapContainer center={[-34.91, -56.18]} zoom={13} className="map-container" zoomControl={false} preferCanvas={true}>
+          {(!sidebarOpen || window.innerWidth > 768) && <ZoomControl position="bottomright" />}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="OSM CARTO" />
           {wmsRecorridos && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:recorrido" format="image/png" transparent={true} />}
           {wmsZonas && <WMSTileLayer url="http://localhost:8081/geoserver/geotravel/wms" layers="geotravel:zona_turistica" format="image/png" transparent={true} />}
