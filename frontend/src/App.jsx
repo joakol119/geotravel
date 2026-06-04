@@ -741,7 +741,7 @@ const WelcomeModal = () => (
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <div style={{ textAlign:'center', fontSize:10, color:'#9c9b95', marginTop:4 }}> 🔍Hacé click en el gráfico para ver en detalle</div>
+              <div style={{ textAlign:'center', fontSize:10, color:'#9c9b95', marginTop:4 }}>🔍 Hacé click en el gráfico para ver en detalle</div>
               {(() => {
                 const conRecorridos = reporte.filter(r => (r.disponibles + r.pendientes + r.fueraEstacion + r.cancelados) > 0);
                 const sinRecorridos = reporte.filter(r => (r.disponibles + r.pendientes + r.fueraEstacion + r.cancelados) === 0);
@@ -840,7 +840,8 @@ const WelcomeModal = () => (
           </FeatureGroup>
 
           {showZonas && !wmsZonas && zonas.map(z => {
-            const coords = api.geojsonToLatLngs(z.geojson);
+            const geo = z.geojson ? (typeof z.geojson === 'string' ? JSON.parse(z.geojson) : z.geojson) : null;
+            if (!geo) return null;
             let fillColor = '#6C63FF';
             let fillOpacity = 0.08;
             if (showZonasActivas && reporte) {
@@ -851,9 +852,18 @@ const WelcomeModal = () => (
               fillColor = activos === 0 ? '#cccccc' : `hsl(${120 - intensity * 60}, 70%, ${50 - intensity * 20}%)`;
               fillOpacity = activos === 0 ? 0.05 : 0.1 + intensity * 0.4;
             }
+            const pathOptions = { color: showZonasActivas ? fillColor : '#6C63FF', weight:2, fillColor, fillOpacity, dashArray:'8,6', lineCap:'round', lineJoin:'round' };
+            const tooltip = <Tooltip sticky>{z.nombre} {showZonasActivas && reporte ? `(${reporte.find(r=>r.id===z.id)?.disponibles||0} activos)` : ''}</Tooltip>;
+            const onClick = () => handleSelect('zona', z, api.geojsonToLatLngs(z.geojson));
+            if (geo.type === 'MultiPolygon') {
+              return geo.coordinates.map((poly, i) => {
+                const coords = poly[0].map(c => [c[1], c[0]]);
+                return <Polygon key={`z-${z.id}-${i}`} positions={coords} pathOptions={pathOptions} eventHandlers={{ click: onClick }}>{tooltip}</Polygon>;
+              });
+            }
+            const coords = api.geojsonToLatLngs(z.geojson);
             return coords.length > 0 ? (
-              <Polygon key={'z-'+z.id} positions={coords} pathOptions={{ color: showZonasActivas ? fillColor : '#6C63FF', weight:2, fillColor, fillOpacity, dashArray:'8,6', lineCap:'round', lineJoin:'round' }}
-                eventHandlers={{ click: () => handleSelect('zona', z, coords) }}><Tooltip sticky>{z.nombre} {showZonasActivas && reporte ? `(${reporte.find(r=>r.id===z.id)?.disponibles||0} activos)` : ''}</Tooltip></Polygon>
+              <Polygon key={'z-'+z.id} positions={coords} pathOptions={pathOptions} eventHandlers={{ click: onClick }}>{tooltip}</Polygon>
             ) : null;
           })}
 

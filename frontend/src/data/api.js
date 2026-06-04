@@ -124,6 +124,9 @@ export function geojsonToLatLngs(geojsonStr) {
   if (geo.type === 'Polygon') {
     return geo.coordinates[0].map(c => [c[1], c[0]]);
   }
+  if (geo.type === 'MultiPolygon') {
+    return geo.coordinates[0][0].map(c => [c[1], c[0]]);
+  }
   return [];
 }
 
