@@ -15,6 +15,7 @@ import ImagePicker from './components/ImagePicker';
 import LoginScreen from './components/LoginScreen';
 import NuevoRecorridoModal from './components/NuevoRecorridoModal';
 import NuevaAtraccionModal from './components/NuevaAtraccionModal';
+import NuevaZonaModal from './components/NuevaZonaModal';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
@@ -122,6 +123,8 @@ export default function App() {
   const [formValues, setFormValues] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editandoRecorrido, setEditandoRecorrido] = useState(null);
+  const [showNuevaZona, setShowNuevaZona] = useState(false);
+  const [editandoZona, setEditandoZona] = useState(null);
   const [showNuevaAtraccion, setShowNuevaAtraccion] = useState(false);
   const [editandoAtraccion, setEditandoAtraccion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -138,6 +141,8 @@ export default function App() {
   const [populares, setPopulares] = useState([]);
   const [showPopulares, setShowPopulares] = useState(false);
   const [showGrafica, setShowGrafica] = useState(false);
+  const [showTodosRecorridos, setShowTodosRecorridos] = useState(false);
+  const [showTodasAtracciones, setShowTodasAtracciones] = useState(false);
   const [openSections, setOpenSections] = useState({ filtros: true, capas: true, wms: false, herramientas: true });
   const toggleSection = (s) => setOpenSections(p => ({...p, [s]: !p[s]}));
   const [rutaHaciaRecorrido, setRutaHaciaRecorrido] = useState(null);
@@ -263,8 +268,9 @@ export default function App() {
       setShowNuevoRecorrido(true);
       return;
     } else if (type === 'zona') {
-      setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
-        nivelAtractivo: item.nivelAtractivo, observaciones: item.observaciones, geojson: item.geojson });
+      setEditandoZona(item);
+      setShowNuevaZona(true);
+      return;
     } else if (type === 'atraccion') {
       setEditandoAtraccion(item);
       setShowNuevaAtraccion(true);
@@ -275,7 +281,7 @@ export default function App() {
   };
 
   const handleSelect = useCallback(async (type, data, coords) => {
-    setSelected({ type, data }); setHistorico(null); setRutaHaciaRecorrido(null); setRutaInfo(null); setFlyTarget(coords);
+    setSelected({ type, data }); setHistorico(null); setRutaHaciaRecorrido(null); setRutaInfo(null); setFlyTarget(coords); setShowTodosRecorridos(false); setShowTodasAtracciones(false);
     if (type === 'zona') {
       try {
         const rs = await api.fetchRecorridosPorZona(data.id);
@@ -458,6 +464,20 @@ const WelcomeModal = () => (
             } catch(e) { alert('Error al guardar atracción: ' + e.message); }
           }}
           onCancel={() => { setShowNuevaAtraccion(false); setEditandoAtraccion(null); }}
+        />
+      )}
+      {showNuevaZona && (
+        <NuevaZonaModal
+          editando={editandoZona}
+          onDibujar={(form) => {
+            setFormValues({ ...form, geojson: editandoZona?.geojson || null });
+            if (editandoZona) setEditingId(editandoZona.id);
+            setShowNuevaZona(false);
+            setEditandoZona(null);
+            startDraw('zona');
+            setShowForm('zona');
+          }}
+          onCancel={() => { setShowNuevaZona(false); setEditandoZona(null); }}
         />
       )}
 
@@ -675,7 +695,7 @@ const WelcomeModal = () => (
             <>
               {authState === 'admin' && (
                 <div style={{ padding:'10px 0 6px' }}>
-                  <button className="toggle-chip active" onClick={() => startDraw('zona')} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
+                  <button className="toggle-chip active" onClick={() => setShowNuevaZona(true)} style={{ background:'#534AB7', borderColor:'#534AB7' }}>+ Nueva zona</button>
                 </div>
               )}
               <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8, display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -1077,25 +1097,35 @@ const WelcomeModal = () => (
                 {recorridosZona.length > 0 && (
                   <div style={{ marginTop:10 }}>
                     <div style={{ fontSize:11, fontWeight:600, color:'#5f5e5a', marginBottom:4 }}>RECORRIDOS EN ESTA ZONA</div>
-                    {recorridosZona.map(r => (
+                    {recorridosZona.slice(0, showTodosRecorridos ? undefined : 3).map(r => (
                       <div key={r.id} className="recorrido-zona-item" onClick={() => handleSelect('recorrido', r, api.geojsonToLatLngs(r.geojson))} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
                         <span style={{ width:8, height:8, borderRadius:'50%', background:ESTADO_COLORS[r.estado], display:'inline-block' }}></span>
                         {r.nombre}
                         <span style={{ marginLeft:'auto', color:'#888780' }}>→</span>
                       </div>
                     ))}
+                    {recorridosZona.length > 3 && (
+                      <button onClick={() => setShowTodosRecorridos(!showTodosRecorridos)} style={{ fontSize:11, color:'#534AB7', background:'none', border:'none', cursor:'pointer', padding:'4px 0', fontWeight:600 }}>
+                        {showTodosRecorridos ? '▲ Ver menos' : `▼ Ver todos (${recorridosZona.length})`}
+                      </button>
+                    )}
                   </div>
                 )}
                 {atraccionesZona.length > 0 && (
                   <div style={{ marginTop:10 }}>
                     <div style={{ fontSize:11, fontWeight:600, color:'#5f5e5a', marginBottom:4 }}>ATRACCIONES EN ESTA ZONA</div>
-                    {atraccionesZona.map(a => (
+                    {atraccionesZona.slice(0, showTodasAtracciones ? undefined : 3).map(a => (
                       <div key={a.id} className="recorrido-zona-item" onClick={() => handleSelect('atraccion', a, api.geojsonToLatLngs(a.geojson))} style={{ fontSize:12, padding:'4px 6px', borderBottom:'1px solid #f0efe8', display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
                         <span>{CLASIF_ICONS[a.clasificacion]||'📍'}</span>
                         {a.nombre}
                         <span style={{ marginLeft:'auto', color:'#888780' }}>→</span>
                       </div>
                     ))}
+                    {atraccionesZona.length > 3 && (
+                      <button onClick={() => setShowTodasAtracciones(!showTodasAtracciones)} style={{ fontSize:11, color:'#534AB7', background:'none', border:'none', cursor:'pointer', padding:'4px 0', fontWeight:600 }}>
+                        {showTodasAtracciones ? '▲ Ver menos' : `▼ Ver todas (${atraccionesZona.length})`}
+                      </button>
+                    )}
                   </div>
                 )}
                 <div style={{ display:'flex', gap:8, marginTop:12 }}>
