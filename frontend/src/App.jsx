@@ -13,6 +13,7 @@ if (typeof window !== 'undefined') {
 delete L.Browser.touch;
 import ImagePicker from './components/ImagePicker';
 import LoginScreen from './components/LoginScreen';
+import NuevoRecorridoModal from './components/NuevoRecorridoModal';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
@@ -116,6 +117,7 @@ export default function App() {
   const [drawMode, setDrawMode] = useState(null);
   const [drawnGeojson, setDrawnGeojson] = useState(null);
   const [showForm, setShowForm] = useState(null);
+  const [showNuevoRecorrido, setShowNuevoRecorrido] = useState(false);
   const [formValues, setFormValues] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -393,6 +395,25 @@ const WelcomeModal = () => (
   return (    
     <div className="app">
       {authState === 'invitado' && showWelcome && <WelcomeModal />}
+      {showNuevoRecorrido && (
+        <NuevoRecorridoModal
+          zonas={zonas}
+          atracciones={atracciones}
+          onDibujar={(form) => {
+            setFormValues(form);
+            setShowNuevoRecorrido(false);
+            startDraw('recorrido');
+            setShowForm('recorrido');
+          }}
+          onCrearDesdePuntos={(data) => {
+            setFormValues(data);
+            setDrawnGeojson(data.geojson);
+            setShowNuevoRecorrido(false);
+            setShowForm('recorrido');
+          }}
+          onCancel={() => setShowNuevoRecorrido(false)}
+        />
+      )}
       {showPopulares && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ background:'white', borderRadius:16, padding:24, width:380, maxHeight:'70vh', overflowY:'auto' }}>
@@ -574,7 +595,7 @@ const WelcomeModal = () => (
             <>
               {authState === 'admin' && (
                 <div style={{ padding:'10px 0 6px' }}>
-                  <button className="toggle-chip active" onClick={() => startDraw('recorrido')} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo recorrido</button>
+                  <button className="toggle-chip active" onClick={() => setShowNuevoRecorrido(true)} style={{ background:'#1D9E75', borderColor:'#1D9E75' }}>+ Nuevo recorrido</button>
                 </div>
               )}
               <div style={{ paddingBottom:10, display:'flex', flexDirection:'column', gap:6, borderTop:'0.5px solid #f0efe8', paddingTop:8 }}>

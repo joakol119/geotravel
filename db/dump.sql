@@ -418,42 +418,67 @@ ALTER TABLE ONLY public.zona_turistica ALTER COLUMN id SET DEFAULT nextval('publ
 --
 
 COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, foto_url, tiempo_estimado) FROM stdin;
-2	Plaza Independencia	Principal plaza de Montevideo con el Mausoleo de Artigas.	plaza	0101000020E61000008B6CE7FBA9194CC079E92631087441C0	\N	30
-3	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N	30
-4	Mercado del Puerto	Mercado gastronómico tradicional desde 1868.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N	30
-5	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García.	museo	0101000020E61000009A99999999194CC08716D9CEF77341C0	\N	30
-1	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856.	teatro	0101000020E61000001904560E2D1A4CC05C8FC2F5287441C0	\N	30
-11	Estadio Centenario	 Estadio histórico inaugurado en 1930 para el primer Mundial de Fútbol. Declarado Monumento Histórico Nacional y sede de los partidos más importantes del fútbol uruguayo.	monumento	0101000020E6100000D1764CDD95134CC05E13D21A837241C0	https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Estadio_Centenario_1930.jpg/330px-Estadio_Centenario_1930.jpg	30
-13	Parque de la Amistad	El Parque de la Amistad es el primer espacio público totalmente inclusivo con accesibilidad universal en Montevideo. Ubicado en el predio de Villa Dolores, está diseñado para que niños, jóvenes y adultos disfruten sin barreras arquitectónicas ni sociales.	parque	0101000020E61000005DFC6D4F90124CC04CA59F70767341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Parque_de_la_Amistad_-_imf8935.jpg/330px-Parque_de_la_Amistad_-_imf8935.jpg	30
-14	Planetario	Planetario de Montevideo, espacio dedicado a la divulgación de astronomía con proyecciones del cielo nocturno y exposiciones interactivas sobre el universo.	monumento	0101000020E610000087E0B88C9B124CC09E40D829567341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Planetario_2.jpg/330px-Planetario_2.jpg	30
-16	Universo Pittamiglio - Castillo del Alquimista	Centro cultural ubicado en un castillo único del año 1911, con visitas guiadas y talleres espirituales.	monumento	0101000020E6100000E4F90CA837134CC02041F163CC7541C0	\N	30
-15	Museo nacional de artes visuales	Información\nEl Museo Nacional de Artes Visuales es la institución que alberga la mayor colección pública de pintura y escultura de Uruguay, así como una destacada selección de arte extranjero. Se encuentra en el Parque Rodó de la ciudad de Montevideo	museo	0101000020E6100000564ACFF412154CC0D331E719FB7441C0	\N	30
-17	Barrio Histórico de Colonia	Casco antiguo declarado Patrimonio de la Humanidad, con calles de adoquines, murallas y arquitectura colonial.	monumento	0101000020E61000008716D9CEF7EB4CC03108AC1C5A3C41C0	\N	120
-18	Faro de Colonia	Faro del siglo XIX con vista panorámica del Río de la Plata y Buenos Aires. Se puede subir hasta la cima.	monumento	0101000020E6100000E9B7AF03E7EC4CC0780B24287E3C41C0	\N	30
-19	Calle de los Suspiros	Icónica calle empedrada del siglo XVII, una de las más fotografiadas de Uruguay.	monumento	0101000020E6100000B1E1E995B2EC4CC0787AA52C433C41C0	\N	15
-20	Plaza de Toros de Colonia	Antigua plaza de toros reconvertida en espacio cultural y centro de exposiciones.	museo	0101000020E6100000B30C71AC8BEB4CC096438B6CE73B41C0	\N	45
-21	La Mano de Punta del Este	Escultura icónica de dedos emergiendo de la arena en Playa Brava, obra de Mario Irarrázabal.	monumento	0101000020E6100000C66D3480B7784BC0A5BDC117267B41C0	\N	20
-22	Puerto de Punta del Este	Puerto con lobos marinos, restaurantes de mariscos y punto de partida para excursiones a Isla de Lobos.	gastronomia	0101000020E61000008B6CE7FBA9794BC0FA7E6ABC747B41C0	\N	60
-23	Casapueblo	Museo y hotel construido por el artista Carlos Páez Vilaró, icónica estructura blanca sobre acantilados.	museo	0101000020E61000006F8104C58F814BC0E17A14AE477941C0	\N	90
-25	Faro de Cabo Polonio	Faro de 1881 con vista 360° del océano, dunas y la reserva de lobos marinos.	monumento	0101000020E6100000BF0E9C33A2E44AC025068195433341C0	\N	30
-26	Lobería de Cabo Polonio	Colonia de lobos y elefantes marinos observables desde las rocas costeras.	parque	0101000020E61000004E62105839E44AC0DD240681953341C0	\N	45
-27	Cerro San Antonio	Cerro con virgen en la cima, teleférico (actualmente inactivo) y vistas panorámicas de Piriápolis.	parque	0101000020E6100000DD24068195A34BC0BA490C022B6F41C0	\N	60
-28	Castillo de Piria	Residencia del fundador de Piriápolis, Francisco Piria, con arquitectura europea y jardines.	museo	0101000020E6100000174850FC18A34BC04A0C022B876E41C0	\N	45
-29	Cerro del Toro	Cerro con escultura de un toro en la cima y fuente de Venus en la base.	monumento	0101000020E610000052B81E85EBA14BC0E7FBA9F1D26D41C0	\N	40
-30	Termas del Daymán	Complejo termal con piscinas de agua caliente natural a 38-46°C, parque acuático y spa.	parque	0101000020E61000001F85EB51B8F64CC0BE9F1A2FDD743FC0	\N	180
-31	Represa de Salto Grande	Obra hidroeléctrica binacional sobre el río Uruguay, con museo y visitas guiadas.	monumento	0101000020E61000007F6ABC7493F84CC048E17A14AE473FC0	\N	90
-32	Faro de La Paloma	Faro activo desde 1874, visitable, con vista panorámica de la costa rochense.	monumento	0101000020E6100000105839B4C8164BC08716D9CEF75341C0	\N	30
-33	Bodega Narbona	Bodega boutique con restaurante gourmet, viñedos y posada rural en un establecimiento del siglo XIX.	gastronomia	0101000020E61000006ABC749318244DC05839B4C876FE40C0	\N	120
-34	Valle Edén	Valle serrano con museo de Carlos Gardel, senderos ecológicos y paisajes de sierra.	parque	0101000020E61000000AD7A3703DFA4BC08FC2F5285CAF3FC0	\N	90
-36	Catedral de Maldonado	Catedral de San Fernando de Maldonado, construida en el siglo XVIII, la más antigua del departamento.	monumento	0101000020E6100000B4C876BE9F7A4BC014AE47E17A7441C0	\N	20
-37	Salto del Penitente	Cascada de 60 metros de altura rodeada de sierras y vegetación nativa, ideal para senderismo.	parque	0101000020E61000002FDD240681954BC0448B6CE7FB2941C0	\N	90
-38	Parque Salus	Parque con manantiales, senderos, arroyo y la planta embotelladora de agua mineral Salus.	parque	0101000020E6100000AE47E17A149E4BC000000000003041C0	\N	60
-39	Cerro Artigas	Cerro con monumento ecuestre al prócer José Artigas, vistas panorámicas de la ciudad de Minas.	monumento	0101000020E610000004560E2DB29D4BC0C976BE9F1A2F41C0	\N	40
-40	Termas de Guaviyú	Complejo termal con piscinas, toboganes y camping, rodeado de naturaleza.	parque	0101000020E610000052B81E85EB014DC0E17A14AE47C13FC0	\N	180
-41	Teatro Florencio Sánchez	Teatro histórico de Paysandú, referente cultural del litoral uruguayo.	teatro	0101000020E61000007D3F355EBA094DC00C022B87162940C0	\N	90
-42	Teatro Macció	Joya arquitectónica de estilo ecléctico inaugurada en 1912, uno de los teatros más bellos del interior.	teatro	0101000020E610000025068195435B4CC04260E5D0222B41C0	\N	60
-43	Complejo Termal Arapey	Termas con aguas surgentes a 38-41°C, piscinas climatizadas y entorno natural.	parque	0101000020E61000008B6CE7FBA9714CC00C022B8716193FC0	\N	180
-35	Museo Carlos Gardel	Museo dedicado al tango y a la teoría del nacimiento de Gardel en Tacuarembó.	museo	0101000020E6100000273108AC1CFA4BC0560E2DB29DAF3FC0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Museo_Carlos_Gardel.JPG/330px-Museo_Carlos_Gardel.JPG	45
+81	Peatonal Sarandí	Principal peatonal de Ciudad Vieja con tiendas, galerías de arte y arquitectura histórica.	monumento	0101000020E610000060E5D022DB194CC08716D9CEF77341C0	\N	30
+82	Avenida 18 de Julio	Principal avenida de Montevideo con monumentos, edificios históricos y vida comercial.	monumento	0101000020E6100000B81E85EB51184CC0A4703D0AD77341C0	\N	30
+83	Palacio Legislativo	Sede del parlamento uruguayo, joya arquitectónica inaugurada en 1925 con mármoles nacionales.	monumento	0101000020E6100000ACADD85F76174CC0EC51B81E857341C0	\N	30
+84	Palacio Salvo	Icónico edificio art déco de 1928, símbolo de la arquitectura montevideana en Plaza Independencia.	monumento	0101000020E6100000B6847CD0B3194CC0B22E6EA3017441C0	\N	30
+86	Parque Rodó	Principal parque urbano de Montevideo con laguna, atracciones y el Museo de Artes Visuales.	parque	0101000020E61000002FDD240681154CC0BE9F1A2FDD7441C0	\N	30
+87	Barrio Carrasco	Elegante barrio residencial de Montevideo con arquitectura inglesa y boutiques de lujo.	monumento	0101000020E6100000C3F5285C8F024CC0E17A14AE477141C0	\N	30
+88	Playa de los Ingleses	Tranquila playa en el Buceo, popular entre familias montevideanas.	playa	0101000020E6100000E17A14AE47114CC0A4703D0AD77341C0	\N	30
+90	Playa de Atlántida	Capital de la Costa de Oro, hermosa playa a 45km de Montevideo sobre el Río de la Plata.	playa	0101000020E6100000EEEBC03923E24BC0EEEBC039236241C0	\N	30
+91	Iglesia Cristo Obrero	Obra maestra del arquitecto Eladio Dieste en Atlántida, Patrimonio de la Humanidad UNESCO.	monumento	0101000020E6100000C3F5285C8FE24BC0C3F5285C8F6241C0	\N	30
+92	Fortaleza de Santa Teresa	Antigua fortaleza colonial del siglo XVIII en el departamento de Rocha, hoy parque nacional.	monumento	0101000020E6100000787AA52C43C44AC088855AD3BCFB40C0	\N	30
+93	Playa La Pedrera	Exclusivo balneario de Rocha con acantilados y playas naturales prístinas.	playa	0101000020E6100000BBB88D06F00E4BC0CDCCCCCCCC4C41C0	\N	30
+94	Laguna de Rocha	Laguna costera protegida con gran biodiversidad de aves y paisajes naturales únicos.	parque	0101000020E61000009A99999999194BC033333333335341C0	\N	30
+95	Bodega Garzón	Bodega premium en las colinas de Garzón, Maldonado. Vinos de autor y turismo enológico.	gastronomia	0101000020E6100000ACADD85F76574BC0211FF46C565541C0	\N	30
+96	Playa Brava	Famosa playa de Punta del Este con olas atlánticas y La Mano de Irarrazabal.	playa	0101000020E6100000F2D24D6210784BC096438B6CE77B41C0	\N	30
+97	Playa Mansa	Playa tranquila de Punta del Este sobre el Río de la Plata, ideal para familias.	playa	0101000020E610000060E5D022DB794BC07B14AE47E17A41C0	\N	30
+98	Isla Gorriti	Isla frente a Punta del Este con playas vírgenes, ruinas históricas y naturaleza.	parque	0101000020E610000025068195437B4BC077BE9F1A2F7D41C0	\N	30
+99	Real de San Carlos	Antiguo complejo turístico de principios del siglo XX con plaza de toros y frontón en Colonia.	monumento	0101000020E61000008FC2F5285CEF4CC0D7A3703D0A3741C0	\N	30
+100	Salto Grande	Represa hidroeléctrica binacional entre Uruguay y Argentina sobre el río Uruguay.	monumento	0101000020E61000003333333333F34CC00000000000403FC0	\N	30
+101	Termas de Daymán	Complejo termal más visitado de Uruguay, en el departamento de Salto.	parque	0101000020E6100000211FF46C56F54CC06666666666663FC0	\N	30
+102	Valle Edén	Valle natural en Tacuarembó con museo gaucho y paisajes serranos únicos del norte uruguayo.	parque	0101000020E6100000CDCCCCCCCC0C4CC09A99999999D93FC0	\N	30
+103	Grutas del Palacio	Formaciones geológicas únicas en Uruguay, rocas basálticas columnares de 70 millones de años.	parque	0101000020E6100000454772F90F114CC09A99999999D940C0	\N	30
+104	Yacimiento de Amatistas	Zona de extracción de amatistas y ágatas en Artigas, única en el mundo por su calidad.	monumento	0101000020E610000088855AD3BC3B4CC06666666666663EC0	\N	30
+89	Museo del Carnaval	Único museo del carnaval en el mundo, ubicado junto al Mercado del Puerto en Ciudad Vieja.	museo	0101000020E61000008940F50F221B4CC0618DB3E9087441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Fachada_del_Museo_del_Carnaval.jpg/330px-Fachada_del_Museo_del_Carnaval.jpg	30
+85	Fortaleza del Cerro	Antigua fortaleza militar del siglo XIX sobre el cerro de Montevideo con vistas panorámicas.	monumento	0101000020E6100000E316F37343214CC04DBB9866BA7141C0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Fortaleza_Montevideo.JPG/330px-Fortaleza_Montevideo.JPG	30
+51	Playa Pocitos	Playa urbana más popular de Montevideo, sobre la rambla.	playa	0101000020E610000049111956F1124CC07A71E2AB1D7541C0	https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/04._Playa_Pocitos_Pano.jpg/330px-04._Playa_Pocitos_Pano.jpg	30
+52	Faro de Punta Carretas	Faro histórico en el barrio de Punta Carretas con vistas panorámicas al Río de la Plata.	monumento	0101000020E61000001B0DE02D90144CC0CAF962EFC57741C0	https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/2016_Faro_de_Punta_Carretas_-_Montevideo.jpg/330px-2016_Faro_de_Punta_Carretas_-_Montevideo.jpg	30
+50	Museo Nacional de Artes Visuales	Principal museo de artes plásticas del Uruguay, ubicado en el Parque Rodó.	museo	0101000020E6100000693A3B191C154CC0D331E719FB7441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Museo_N_de_Artes_Visuales.jpg/330px-Museo_N_de_Artes_Visuales.jpg	30
+60	Casapueblo	Obra arquitectónica del artista Carlos Páez Vilaró en Punta Ballena. Hotel y museo de arte.	museo	0101000020E6100000AD1402B9C4854BC011E50B5A487441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Casapueblo.JPG/330px-Casapueblo.JPG	30
+53	Planetario de Montevideo	El Planetario de Montevideo Agrimensor Germán Barbato es un planetario de Uruguay, ubicado en la ciudad de Montevideo, en el barrio de Villa Dolores. Dentro del predio del entonces zoológico Villa Dolores y el hoy Parque Villa Dolores	museo	0101000020E6100000234910AE80124CC0DDCD531D727341C0	https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Planetario_Municipal_Agrimensor_Germ%C3%A1n_Barbato._Montevideo%2C_Uruguay.JPG/330px-Planetario_Municipal_Agrimensor_Germ%C3%A1n_Barbato._Montevideo%2C_Uruguay.JPG	30
+48	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García, figura del arte universal.	museo	0101000020E61000007F15E0BBCD194CC068B27F9E067441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Museo_Torres_Garcia.jpg/330px-Museo_Torres_Garcia.jpg	30
+57	Plaza de Toros de Colonia	Antigua plaza de toros del siglo XIX, hoy convertida en museo y espacio cultural.	museo	0101000020E6100000F8DEDFA0BDEE4CC02EC55565DF3741C0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_de_Toros_-_Colonia_del_Sacramento.jpg/330px-Plaza_de_Toros_-_Colonia_del_Sacramento.jpg	30
+44	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856. Joya arquitectónica del patrimonio cultural montevideano.	teatro	0101000020E61000004241295AB9194CC05587DC0C377441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Teatro_Sol%C3%ADs_remodelado.jpg/330px-Teatro_Sol%C3%ADs_remodelado.jpg	30
+45	Plaza Independencia	Principal plaza de Montevideo con el Mausoleo de Artigas. Centro histórico y simbólico de la capital.	plaza	0101000020E61000008B6CE7FBA9194CC079E92631087441C0	\N	30
+46	Mercado del Puerto	Mercado gastronómico tradicional desde 1868. Famoso por sus parrillas y productos artesanales.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N	30
+47	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo, símbolo de la historia colonial de la ciudad.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N	30
+54	Barrio Histórico de Colonia	Patrimonio de la Humanidad UNESCO. Casco histórico colonial con calles empedradas y arquitectura portuguesa y española.	monumento	0101000020E610000024B9FC87F4EB4CC097900F7A363B41C0	\N	30
+55	Faro de Colonia	Faro histórico construido sobre las ruinas del convento de San Francisco en Colonia del Sacramento.	monumento	0101000020E610000040A4DFBE0EEC4CC088635DDC463B41C0	\N	30
+56	Calle de los Suspiros	Una de las calles más fotogénicas de Uruguay, en el corazón del barrio histórico de Colonia.	monumento	0101000020E610000095D4096822EC4CC017D9CEF7533B41C0	\N	30
+58	La Mano de Punta del Este	Escultura icónica de Mario Irarrazabal en la playa Brava. Símbolo de Punta del Este.	monumento	0101000020E6100000637FD93D79784BC04E621058397C41C0	\N	30
+59	Puerto de Punta del Este	Puerto deportivo y pesquero de Punta del Este, centro de la vida costera del balneario.	monumento	0101000020E610000054742497FF784BC0C139234A7B7B41C0	\N	30
+61	Catedral de Maldonado	Catedral de la Inmaculada Concepción, patrimonio arquitectónico del siglo XVIII en Maldonado.	monumento	0101000020E6100000EC2FBB270F7B4BC0151DC9E53F7441C0	\N	30
+62	Cabo Polonio	Paraje natural protegido con lobería, dunas y faro. Sin electricidad ni agua corriente.	playa	0101000020E61000004F401361C3E34AC097FF907EFB3241C0	\N	30
+63	Faro de Cabo Polonio	Faro histórico en Cabo Polonio, uno de los más fotografiados de Uruguay.	monumento	0101000020E61000007958A835CDE34AC0EC2FBB270F3341C0	\N	30
+64	Faro de La Paloma	Faro emblemático del balneario La Paloma, en el departamento de Rocha.	monumento	0101000020E6100000CE88D2DEE0134BC0EA95B20C715441C0	\N	30
+65	Lobería de Cabo Polonio	Una de las colonias de lobos marinos más grandes de Uruguay, con miles de ejemplares.	parque	0101000020E610000007CE1951DAE34AC07B14AE47E13241C0	\N	30
+66	Termas de Arapey	Complejo termal en el departamento de Salto, con aguas minerales naturales.	parque	0101000020E6100000EEEBC03923C24CC0423EE8D9ACEA3EC0	\N	30
+67	Represa de Salto Grande	Gran obra hidroeléctrica binacional sobre el río Uruguay, entre Uruguay y Argentina.	monumento	0101000020E6100000454772F90FF14CC0DCD7817346443FC0	\N	30
+68	Complejo Termal Arapey	Termas naturales de Arapey en el departamento de Salto.	parque	0101000020E6100000C3F5285C8FC24CC0EC51B81E85EB3EC0	\N	30
+49	Estadio Centenario	Estadio histórico inaugurado en 1930 para el primer Mundial de Fútbol. Monumento Histórico Nacional.	monumento	0101000020E6100000B1A4DC7D8E134CC0344C6DA9837241C0	https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Estadio_Centenario_1930.jpg/330px-Estadio_Centenario_1930.jpg	30
+70	Parque de la Amistad	Parque natural en Tacuarembó con cañadas, sierras y biodiversidad autóctona.	parque	0101000020E6100000EEEBC03923024CC024287E8CB9BB3FC0	\N	30
+71	Parque Salus	Parque natural de la empresa Salus en Minas, con cascadas, fuentes y paisajes serranos.	parque	0101000020E610000088855AD3BC9B4BC0BBB88D06F02E41C0	\N	30
+72	Salto del Penitente	Cascada de 60 metros de altura en las sierras de Lavalleja, atractivo natural único.	parque	0101000020E6100000DFE00B93A98A4BC0787AA52C432441C0	\N	30
+73	Cerro Artigas	Cerro emblemático de las sierras de Lavalleja con vistas panorámicas.	parque	0101000020E61000000000000000A04BC0CDCCCCCCCC2C41C0	\N	30
+74	Castillo de Piria	Castillo construido por Francisco Piria en las sierras de Piriápolis, hoy hotel histórico.	monumento	0101000020E610000018265305A3A24BC090A0F831E66E41C0	\N	30
+75	Cerro del Toro	Cerro emblemático de Piriápolis con teleférico y vistas al Río de la Plata.	parque	0101000020E61000003333333333A34BC0E5F21FD26F6F41C0	\N	30
+76	Cerro San Antonio	Cerro con estatua del arcángel San Antonio y vistas panorámicas de Piriápolis.	parque	0101000020E610000027C286A757A24BC0AC8BDB68006F41C0	\N	30
+77	Teatro Florencio Sánchez	Teatro histórico de Paysandú, nombrado en honor al dramaturgo uruguayo.	teatro	0101000020E6100000DFE00B93A90A4DC0545227A0892840C0	\N	30
+78	Termas de Guaviyú	Complejo termal en el departamento de Paysandú, uno de los más visitados del litoral.	parque	0101000020E6100000ACADD85F76B74CC076711B0DE05D3FC0	\N	30
+79	Bodega Narbona	Bodega histórica en Carmelo, Colonia. Producción de vinos premium y turismo enológico.	gastronomia	0101000020E6100000787AA52C43244DC000000000000041C0	\N	30
+80	Teatro Macció	Teatro municipal de San José de Mayo, patrimonio arquitectónico del interior del país.	teatro	0101000020E610000088855AD3BC5B4CC0DFE00B93A92A41C0	\N	30
+69	Museo Carlos Gardel	Museo dedicado al Zorzal Criollo en Tacuarembó, ciudad que se disputa su nacimiento.	museo	0101000020E610000012143FC6DCFD4BC00F0BB5A679B73FC0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Museo_Carlos_Gardel.JPG/330px-Museo_Carlos_Gardel.JPG	30
 \.
 
 
@@ -462,9 +487,6 @@ COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, f
 --
 
 COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM stdin;
-7	4	pendiente	2026-03-01 10:00:00	Recorrido en planificación
-10	4	disponible	2026-05-22 13:12:19.327681	\N
-25	4	fuera_de_estacion	2026-05-22 20:08:11.547392	\N
 \.
 
 
@@ -473,18 +495,20 @@ COPY public.historico_estado (id, recorrido_id, estado, fecha, observacion) FROM
 --
 
 COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsable, tipo_experiencia, estado, estacion_inicio, estacion_fin, geom) FROM stdin;
-1	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo.	3 horas	María González	historica	disponible	3	12	0102000020E6100000040000001904560E2D1A4CC05C8FC2F5287441C060E5D022DB194CC0A301BC05127441C08B6CE7FBA9194CC079E92631087441C09A99999999194CC08716D9CEF77341C0
-2	Ruta Gastronómica del Puerto	Degustación y visita a los mejores puestos del Mercado del Puerto. PRUEBA	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000300000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0
-3	Paseo Costero Pocitos	Caminata por la rambla desde Parque Rodó hasta Playa Pocitos.	2.5 horas	Ana Martínez	natural	fuera_de_estacion	11	3	0102000020E6100000030000002FDD240681154CC077BE9F1A2F7541C0DBF97E6ABC144CC0D9CEF753E37541C04E62105839144CC02FDD2406817541C0
-20	Punta del Este Clásico	Recorrido por los puntos más icónicos de Punta del Este: La Mano, el Puerto y Casapueblo.	300	Carlos López	cultural	fuera_de_estacion	11	3	0102000020E610000003000000C66D3480B7784BC0A5BDC117267B41C08B6CE7FBA9794BC0FA7E6ABC747B41C06F8104C58F814BC0E17A14AE477941C0
-19	Colonia Histórica	Recorrido por el casco histórico de Colonia del Sacramento, patrimonio de la Humanidad.	180	Ana García	cultural	disponible	1	12	0102000020E610000004000000E9B7AF03E7EC4CC0780B24287E3C41C0B1E1E995B2EC4CC0787AA52C433C41C08716D9CEF7EB4CC03108AC1C5A3C41C0B30C71AC8BEB4CC096438B6CE73B41C0
-22	Ruta Termal del Litoral	Circuito por las principales termas del litoral: Daymán, Guaviyú y Arapey.	600	Pedro Martínez	natural	disponible	4	10	0102000020E6100000030000001F85EB51B8F64CC0BE9F1A2FDD743FC052B81E85EB014DC0E17A14AE47C13FC08B6CE7FBA9714CC00C022B8716193FC0
-23	Sierras de Minas	Recorrido por las sierras de Lavalleja: Cerro Artigas, Parque Salus y Salto del Penitente.	360	Laura Fernández	natural	disponible	3	11	0102000020E61000000300000004560E2DB29D4BC0C976BE9F1A2F41C0AE47E17A149E4BC000000000003041C02FDD240681954BC0448B6CE7FB2941C0
-21	Naturaleza en Rocha	Recorrido por la costa rochense: Cabo Polonio, La Paloma y La Pedrera.	480	María Rodríguez	natural	fuera_de_estacion	11	3	0102000020E610000003000000105839B4C8164BC08716D9CEF75341C00000000000104BC0295C8FC2F52841C0BF0E9C33A2E44AC025068195433341C0
-4	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
-24	Ruta del Vino - Carmelo	Recorrido gastronómico y enológico por las bodegas boutique de Carmelo.	300	Diego Silva	gastronomica	disponible	3	11	0102000020E6100000030000006ABC749318244DC05839B4C876FE40C0F6285C8FC2254DC000000000000041C0D7A3703D0A274DC0713D0AD7A30041C0
-25	Cerros de Piriápolis	Ascenso al Cerro San Antonio y Cerro del Toro con vistas panorámicas y visita al Castillo de Piria.	240	Sofía Méndez	natural	disponible	1	12	0102000020E610000003000000DD24068195A34BC0BA490C022B6F41C052B81E85EBA14BC0E7FBA9F1D26D41C0174850FC18A34BC04A0C022B876E41C0
-26	Ruta Gaucha - Tacuarembó	Inmersión en la cultura gauchesca: Valle Edén, museo Gardel y tradiciones rurales.	360	Martín Olivera	historica	disponible	1	12	0102000020E610000003000000AE47E17A14FE4BC0B81E85EB51B83FC00AD7A3703DFA4BC08FC2F5285CAF3FC0273108AC1CFA4BC0560E2DB29DAF3FC0
+45	a	a	3	a	cultural	pendiente	1	12	0102000020E61000004B000000789961A3AC134CC08E058541997241C0506EDBF7A8134CC03352EFA99C7241C04224438EAD134CC0A25D85949F7241C039639813B4134CC0D449B6BA9C7241C00B47904AB1134CC03673486AA17241C09DD7D825AA134CC0AAD381ACA77241C0E61F7D93A6134CC090DB2F9FAC7241C0D02B9E7AA4134CC0C3802557B17241C083C2A04CA3134CC0594FADBEBA7241C0D5CBEF3499134CC0ADDD76A1B97241C094A2957B81134CC0847EA65EB77241C016139B8F6B134CC0D21BEE23B77241C09CC1DF2F66134CC0FBAE08FEB77241C03E213B6F63134CC08907944DB97241C00A48FB1F60134CC0C95A43A9BD7241C08869DFDC5F134CC073309B00C37241C06493FC885F134CC03562669FC77241C04C37894160134CC032C687D9CB7241C0117349D576134CC00C772E8CF47241C0F1BDBF417B134CC08B51D7DAFB7241C0191D90847D134CC0AEF36F97FD7241C0DC82A5BA80134CC0EFAEB321FF7241C0EC51B81E85134CC07D073F71007341C0490F43AB93134CC0520C9068027341C0250516C094134CC093C7D3F2037341C0250516C094134CC0E5ED08A7057341C0F0F78BD992134CC00E4DD9E9077341C055A0168387134CC0C1E3DBBB067341C0E7FC14C781134CC0EBAA402D067341C07825C9737D134CC0FD497CEE047341C02176A6D079134CC0874D64E6027341C04C7155D977134CC0B6696CAF057341C0D5230D6E6B134CC0EF39B01C217341C0A852B3075A134CC069E21DE0497341C00A2B155454134CC0469737876B7341C0556D37C137134CC065187783687341C0CE16105A0F134CC0EA92718C647341C06571FF91E9124CC081785DBF607341C01D1D5723BB124CC0BF4692205C7341C080290307B4124CC0E6B16664907341C031D3F6AFAC124CC0F25F2008907341C0DB85E63A8D124CC0FF756EDA8C7341C05EBC1FB75F124CC02D414640857341C0D7A546E867124CC05111A7936C7341C0D7A546E867124CC05111A7936C7341C0DC627E6E68124CC0E1D1C6116B7341C0B091240857124CC0A73B4F3C677341C0C8ED974F56124CC0ACC43C2B697341C0B7B6F0BC54124CC005DCF3FC697341C06A4DF38E53124CC005DCF3FC697341C0C4CC3E8F51124CC0A0168387697341C0630B410E4A124CC00C0742B2807341C08BFCFA2136124CC0EACC3D247C7341C07C0A80F10C124CC0FBE6FEEA717341C0C501F4FBFE114CC01B683EE76E7341C00C74ED0BE8114CC00CCD751A697341C0AC8F87BEBB114CC0FB78E8BB5B7341C06D3CD862B7114CC0F5D89601677341C0A9A27895B5114CC04C546F0D6C7341C0EFC9C342AD114CC0A5D93C0E837341C0855E7F129F114CC04815C5ABAC7341C07427D87F9D114CC0DBC2F352B17341C0EA060ABC93114CC0D26F5F07CE7341C0293DD34B8C114CC03FC8B260E27341C0FC54151A88114CC003B34291EE7341C06EFC89CA86114CC0A8FFACF9F17341C0C426327381114CC06D01A1F5F07341C0F7AE415F7A114CC03EB14E95EF7341C03B342C465D114CC0EE26F8A6E97341C091990B5C1E114CC0B30B06D7DC7341C0FCFECD8B13114CC01348895DDB7341C0E2E995B20C114CC0D158FB3BDB7341C0BF47FDF50A114CC08C48145AD67341C01D226E4E25114CC067D65240DA7341C0726F7EC344114CC0ECA17DACE07341C0
+46	prueba optimizado	a	3	maria	cultural	pendiente	1	12	0102000020E6100000A70000006E13EE9579154CC064778192027541C07217618A72154CC0D5EAABAB027541C0F8C5A52A6D154CC0CFF9298E037541C08E5A61FA5E154CC0A296E656087541C02F35423F53154CC0D1B2EE1F0B7541C0D3307C444C154CC0E8DA17D00B7541C08542041C42154CC0D1B2EE1F0B7541C0F564FED137154CC0E90E62670A7541C0D575A8A624154CC01F84807C097541C0DC0F786000154CC06798DA52077541C0A08CF161F6144CC0CD91955F067541C0EA3C2AFEEF144CC0CEC5DFF6047541C02BDB87BCE5144CC0FA28232E007541C0F5143944DC144CC0B5183C4CFB7441C0CE5147C7D5144CC0C8EBC1A4F87441C08C2E6F0ED7144CC03485CE6BEC7441C04A0B9755D8144CC02FDFFAB0DE7441C0F54883DBDA144CC040DCD5ABC87441C0CA198A3BDE144CC015562AA8A87441C028EE7893DF144CC06893C3279D7441C06ADD06B5DF144CC0ECD973999A7441C066D993C0E6144CC013BBB6B75B7441C00D8E9257E7144CC03961C268567441C07C65DEAAEB144CC0D0EFFB372F7441C062A1D634EF144CC0047289230F7441C09C6B98A1F1144CC09E0AB8E7F97341C0D4484BE5ED144CC07847C66AF37341C025EA059FE6144CC08F52094FE87341C0A8C821E2E6144CC07E1B62BCE67341C0C0EAC891CE144CC0FBB1497EC47341C0815D4D9EB2144CC08692C9A99D7341C0E78A5242B0144CC07A185A9D9C7341C0EB8EC536A9144CC0CB85CABF967341C02DB29DEFA7144CC04A438D42927341C0336FD575A8144CC0334FAE29907341C043E7357689144CC0C0CB0C1B657341C0DF4F8D976E144CC0DFC14F1C407341C0CD76853E58144CC07218CC5F217341C0072461DF4E144CC067817687147341C0D5B2B5BE48144CC09F9273620F7341C0C4AF58C345144CC0F8DD74CB0E7341C07F6B274A42144CC07BBC900E0F7341C06ADFDC5F3D144CC06EDA8CD3107341C0FB07910C39144CC0A41B6151117341C0D9CD8C7E34144CC0454772F90F7341C0FE0B040132144CC0C39CA04D0E7341C03B72A43330144CC02C6684B7077341C0DC9DB5DB2E144CC0FD153257067341C0361D01DC2C144CC02B155454FD7241C0A33B889D29144CC083A7902BF57241C04C8C65FA25144CC05CE49EAEEE7241C0AD307DAF21144CC06571FF91E97241C0CB49287D21144CC042CF66D5E77241C086E8103812144CC0F7B0170AD87241C00DFFE9060A144CC05AF10D85CF7241C01137A79201144CC0105839B4C87241C09DD66D50FB134CC030D978B0C57241C06440F67AF7134CC001892650C47241C021CCED5EEE134CC09DF7FF71C27241C0C442AD69DE134CC0EBC891CEC07241C0677FA0DCB6134CC09FC728CFBC7241C083C2A04CA3134CC0594FADBEBA7241C0D5CBEF3499134CC0ADDD76A1B97241C069E1B20A9B134CC00A2DEBFEB17241C044A33B889D134CC0D787F546AD7241C01283C0CAA1134CC015562AA8A87241C04224438EAD134CC0A25D85949F7241C0506EDBF7A8134CC03352EFA99C7241C0789961A3AC134CC08E058541997241C0789961A3AC134CC08E058541997241C0506EDBF7A8134CC03352EFA99C7241C04224438EAD134CC0A25D85949F7241C039639813B4134CC0D449B6BA9C7241C00B47904AB1134CC03673486AA17241C09DD7D825AA134CC0AAD381ACA77241C0E61F7D93A6134CC090DB2F9FAC7241C0D02B9E7AA4134CC0C3802557B17241C083C2A04CA3134CC0594FADBEBA7241C0D5CBEF3499134CC0ADDD76A1B97241C094A2957B81134CC0847EA65EB77241C016139B8F6B134CC0D21BEE23B77241C09CC1DF2F66134CC0FBAE08FEB77241C03E213B6F63134CC08907944DB97241C00A48FB1F60134CC0C95A43A9BD7241C08869DFDC5F134CC073309B00C37241C06493FC885F134CC03562669FC77241C04C37894160134CC032C687D9CB7241C0117349D576134CC00C772E8CF47241C0F1BDBF417B134CC08B51D7DAFB7241C0191D90847D134CC0AEF36F97FD7241C0DC82A5BA80134CC0EFAEB321FF7241C0EC51B81E85134CC07D073F71007341C0490F43AB93134CC0520C9068027341C0250516C094134CC093C7D3F2037341C0250516C094134CC0E5ED08A7057341C0F0F78BD992134CC00E4DD9E9077341C055A0168387134CC0C1E3DBBB067341C0E7FC14C781134CC0EBAA402D067341C07825C9737D134CC0FD497CEE047341C02176A6D079134CC0874D64E6027341C04C7155D977134CC0B6696CAF057341C0D5230D6E6B134CC0EF39B01C217341C0A852B3075A134CC069E21DE0497341C00A2B155454134CC0469737876B7341C0556D37C137134CC065187783687341C0CE16105A0F134CC0EA92718C647341C06571FF91E9124CC081785DBF607341C01D1D5723BB124CC0BF4692205C7341C080290307B4124CC0E6B16664907341C031D3F6AFAC124CC0F25F2008907341C0DB85E63A8D124CC0FF756EDA8C7341C05EBC1FB75F124CC02D414640857341C0D7A546E867124CC05111A7936C7341C0D7A546E867124CC05111A7936C7341C0DC627E6E68124CC0E1D1C6116B7341C0B091240857124CC0A73B4F3C677341C0C8ED974F56124CC0ACC43C2B697341C0B7B6F0BC54124CC005DCF3FC697341C06A4DF38E53124CC005DCF3FC697341C0C4CC3E8F51124CC0A0168387697341C0630B410E4A124CC00C0742B2807341C05EBC1FB75F124CC02D414640857341C0DB85E63A8D124CC0FF756EDA8C7341C02A5778978B124CC07CD11E2FA47341C0CB82893F8A124CC0D926158DB57341C0FED64E9484124CC00E85CFD6C17341C0FD851E317A124CC025E7C41EDA7341C0AE635C7171124CC0448B6CE7FB7341C036AE7FD767124CC092B3B0A71D7441C0EB3713D385124CC0373465A71F7441C0ABEAE5779A124CC019E76F42217441C0EA094B3CA0124CC053B131AF237441C00740DCD5AB124CC0C6DD205A2B7441C058E71890BD124CC0D2A8C0C9367441C090831266DA124CC0221CB3EC497441C034D6FECEF6124CC08FA850DD5C7441C0DEE522BE13134CC0D95E0B7A6F7441C09A6038D730134CC064045438827441C0C91EA16648134CC06E3315E2917441C04EF04DD367134CC01C7BF65CA67441C00B992B836A134CC00F99F221A87441C0D15966118A134CC0E4A3C519C37441C0280F0BB5A6134CC01F10E84CDA7441C052D66F26A6134CC038BD8BF7E37441C0520ABABDA4134CC02524D236FE7441C0605AD427B9134CC0ECC1A4F8F87441C082C8224DBC134CC0914259F8FA7441C02158552FBF134CC0001AA54BFF7441C0A5BBEB6CC8134CC064778192027541C0D3F4D901D7134CC06FF1F09E037541C030849CF7FF134CC0325706D5067541C0CDCEA2772A144CC0F5BC1B0B0A7541C082751C3F54144CC0944C4EED0C7541C0946B0A6476144CC0E08101840F7541C0A88FC01F7E144CC0F8A92A34107541C0376DC66988144CC080457EFD107541C08CBAD6DEA7144CC008AD872F137541C0DC2DC901BB144CC0A87004A9147541C051F69672BE144CC03140A209147541C02D095053CB144CC0BADBF5D2147541C017838769DF144CC048348122167541C0026553AEF0144CC029E78BBD177541C0195932C7F2144CC064E597C1187541C0C51B9947FE144CC05EF415A4197541C0DC0F786000154CC06798DA52077541C0B24813EF00154CC01DCBBBEA017541C0B11A4B581B154CC0FE7DC685037541C0
+33	Punta del Este Clásico	Tour por los íconos de Punta del Este: La Mano, Puerto, Casapueblo y playas.	5 horas	Diego Hernández	cultural	fuera_de_estacion	11	3	0102000020E6100000040000007633A31F0D7B4BC009C03FA54A7441C085CC9541B5854BC0BF49D3A0687441C094DE37BEF6784BC0BEA3C684987B41C0596DFE5F75784BC06953758F6C7C41C0
+27	Recorrido Histórico Ciudad Vieja	Paseo por los principales puntos históricos del casco antiguo de Montevideo. Arquitectura colonial, museos y la rambla.	3 horas	María González	historica	disponible	1	12	0102000020E6100000070000008B6CE7FBA9194CC079E92631087441C060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C0F90FE9B7AF1B4CC03108AC1C5A7441C06DE7FBA9F11A4CC0787AA52C437441C09A99999999194CC08716D9CEF77341C0
+28	Ruta Gastronómica del Puerto	Degustación en los mejores puestos del Mercado del Puerto y bares históricos de Ciudad Vieja.	2 horas	Carlos Rodríguez	gastronomica	disponible	1	12	0102000020E61000000400000060E5D022DB194CC0A301BC05127441C01904560E2D1A4CC05C8FC2F5287441C06DE7FBA9F11A4CC0787AA52C437441C025068195431B4CC04E621058397441C0
+29	Tour Cultural Completo	Visita a los principales museos y teatros de Montevideo. Teatro Solís, Museo Torres García y MNAV.	5 horas	Pedro López	cultural	disponible	4	11	0102000020E6100000030000001904560E2D1A4CC05C8FC2F5287441C09A99999999194CC08716D9CEF77341C02FDD240681154CC077BE9F1A2F7541C0
+30	Rambla de Montevideo	Recorrido por la rambla costera desde Ciudad Vieja hasta Pocitos. Vistas al Río de la Plata.	4 horas	Ana Martínez	natural	disponible	1	12	0102000020E610000005000000F90FE9B7AF1B4CC03108AC1C5A7441C0D34D621058194CC0DBF97E6ABC7441C0F6285C8FC2154CC085EB51B81E7541C04E62105839144CC02FDD2406817541C052B81E85EB114CC0F6285C8FC27541C0
+31	Colonia Histórica	Recorrido por el barrio histórico de Colonia del Sacramento, Patrimonio de la Humanidad UNESCO.	3 horas	Roberto Silva	historica	disponible	1	12	0102000020E61000000500000024B9FC87F4EB4CC097900F7A363B41C040A4DFBE0EEC4CC088635DDC463B41C095D4096822EC4CC017D9CEF7533B41C016FBCBEEC9EB4CC07AA52C431C3B41C024B9FC87F4EB4CC097900F7A363B41C0
+35	Ruta Termal del Litoral	Recorrido por las termas de Salto, Paysandú y el litoral del río Uruguay.	2 días	Fernando Gómez	natural	disponible	4	9	0102000020E61000000400000088855AD3BCFB4CC08A8EE4F21F623FC0454772F90FF14CC0DCD7817346443FC0EEEBC03923C24CC0423EE8D9ACEA3EC0ACADD85F76B74CC076711B0DE05D3FC0
+36	Sierras de Minas	Caminata por las sierras de Lavalleja, Parque Salus y Salto del Penitente.	6 horas	Isabel Torres	natural	disponible	3	11	0102000020E61000000300000088855AD3BC9B4BC0BBB88D06F02E41C0DFE00B93A98A4BC0787AA52C432441C00000000000A04BC0CDCCCCCCCC2C41C0
+37	Ruta Gaucha - Tacuarembó	Inmersión en la cultura gaucha del norte uruguayo. Estancias, folklore y tradiciones.	1 día	Juan Acosta	cultural	disponible	4	10	0102000020E61000000300000012143FC6DCFD4BC00F0BB5A679B73FC0EEEBC03923024CC024287E8CB9BB3FC06666666666064CC03333333333B33FC0
+32	Ruta del Vino - Carmelo	Visita a bodegas y viñedos de Carmelo y la región de Colonia. Degustación de vinos premium uruguayos.	6 horas	Lucía Pérez	gastronomica	fuera_de_estacion	3	5	0102000020E610000004000000787AA52C43244DC000000000000041C06666666666264DC03D0AD7A370FD40C0295C8FC2F5284DC07B14AE47E1FA40C0EC51B81E852B4DC0B81E85EB51F840C0
+34	Naturaleza en Rocha	Recorrido por Cabo Polonio, La Paloma y las playas vírgenes del departamento de Rocha.	8 horas	Valentina Castro	natural	fuera_de_estacion	11	3	0102000020E610000003000000CE88D2DEE0134BC0EA95B20C715441C04F401361C3E34AC097FF907EFB3241C07958A835CDE34AC0EC2FBB270F3341C0
+38	Cerros de Piriápolis	Recorrido por los tres cerros de Piriápolis: Toro, San Antonio y el Castillo de Piria.	4 horas	Carmen Suárez	natural	fuera_de_estacion	10	4	0102000020E61000000400000027C286A757A24BC0AC8BDB68006F41C018265305A3A24BC090A0F831E66E41C03333333333A34BC0E5F21FD26F6F41C027C286A757A24BC0AC8BDB68006F41C0
 \.
 
 
@@ -493,15 +517,6 @@ COPY public.recorrido (id, nombre, descripcion, duracion_estimada, guia_responsa
 --
 
 COPY public.recorrido_atraccion (id, recorrido_id, atraccion_id, orden) FROM stdin;
-1	1	1	1
-2	1	3	2
-3	1	2	3
-4	1	5	4
-5	2	3	1
-6	2	1	2
-7	2	4	3
-11	4	1	1
-12	4	5	2
 \.
 
 
@@ -601,7 +616,7 @@ COPY topology.layer (topology_id, layer_id, schema_name, table_name, feature_col
 -- Name: atraccion_turistica_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 43, true);
+SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 104, true);
 
 
 --
@@ -622,7 +637,7 @@ SELECT pg_catalog.setval('public.recorrido_atraccion_id_seq', 13, true);
 -- Name: recorrido_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.recorrido_id_seq', 26, true);
+SELECT pg_catalog.setval('public.recorrido_id_seq', 46, true);
 
 
 --
@@ -636,7 +651,7 @@ SELECT pg_catalog.setval('public.usuario_id_seq', 1, true);
 -- Name: zona_turistica_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.zona_turistica_id_seq', 83, true);
+SELECT pg_catalog.setval('public.zona_turistica_id_seq', 84, true);
 
 
 --
