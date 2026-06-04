@@ -9,20 +9,41 @@ const TIPO_OPTIONS = [
   { value: 'historica', label: '📜 Histórica' },
 ];
 
-export default function NuevoRecorridoModal({ zonas, atracciones, onDibujar, onCrearDesdePuntos, onCancel }) {
-  const [modo, setModo] = useState(null); // null | 'dibujar' | 'puntos'
+export default function NuevoRecorridoModal({ zonas, atracciones, onDibujar, onCrearDesdePuntos, onCancel, editando }) {  const [modo, setModo] = useState(null);
   const [form, setForm] = useState({
-    nombre: '', descripcion: '', duracionEstimada: '', guiaResponsable: '',
-    tipoExperiencia: 'cultural', estacionInicio: 1, estacionFin: 12,
+    nombre: editando?.nombre || '',
+    descripcion: editando?.descripcion || '',
+    duracionEstimada: editando?.duracionEstimada || '',
+    guiaResponsable: editando?.guiaResponsable || '',
+    tipoExperiencia: editando?.tipoExperiencia || 'cultural',
+    estacionInicio: editando?.estacionInicio || 1,
+    estacionFin: editando?.estacionFin || 12,
   });
   const [puntos, setPuntos] = useState([
-  { tipo: 'atraccion', id: '' },
-  { tipo: 'atraccion', id: '' }
-]);
-  const [step, setStep] = useState(1); // 1: elegir modo, 2: puntos/formulario
+    { tipo: 'atraccion', id: '' },
+    { tipo: 'atraccion', id: '' }
+  ]);
+  const [step, setStep] = useState(1);
+  const [optimizado, setOptimizado] = useState(false);
+  const [cargando, setCargando] = useState(!!editando);
+
+  useEffect(() => {
+    if (editando) {
+      fetch(`/api/recorridos/${editando.id}/atracciones`)
+        .then(r => r.json())
+        .then(atracs => {
+          if (atracs.length > 0) {
+            setPuntos(atracs.map(a => ({ tipo: 'atraccion', id: String(a.id) })));
+            setModo('puntos');
+            setStep(2);
+          }
+          setCargando(false);
+        })
+        .catch(() => setCargando(false));
+    }
+  }, [editando]);
 
   const handleForm = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const [optimizado, setOptimizado] = useState(false);
   const addPunto = () => setPuntos(p => [...p.slice(0, -1), { tipo: 'atraccion', id: '' }, p[p.length - 1]]);
   const removePunto = (i) => setPuntos(p => p.filter((_, idx) => idx !== i));
   const updatePunto = (i, k, v) => setPuntos(p => p.map((pt, idx) => idx === i ? { ...pt, [k]: v } : pt));
@@ -104,6 +125,10 @@ const handleCrear = async () => {
       const start = `${coords[i][0]},${coords[i][1]}`;
       const end = `${coords[i+1][0]},${coords[i+1][1]}`;
       const res = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${start}&end=${end}`);
+      if (!res.ok) {
+        rutaCoords = [...rutaCoords, coords[i], coords[i+1]];
+        continue;
+      }
       const data = await res.json();
       if (data.features && data.features[0]) {
         const segmento = data.features[0].geometry.coordinates;
@@ -124,6 +149,7 @@ const handleCrear = async () => {
   const puntosCompletos = puntos.every(p => p.id);
   const formValido = form.nombre && form.guiaResponsable;
 
+  if (cargando) return null;
   return (
     <div style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 3000,
@@ -165,7 +191,6 @@ const handleCrear = async () => {
         </div>
 
         <div style={{ padding: '0 24px 24px' }}>
-
           {/* PASO 1: Elegir modo */}
           {step === 1 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -293,11 +318,10 @@ const handleCrear = async () => {
                   style={{ flex: 2, padding: '10px', border: 'none', borderRadius: 10, background: formValido ? '#534AB7' : '#e5e4df', color: formValido ? 'white' : '#9c9b95', cursor: formValido ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 600 }}
                 >
                   Crear recorrido
-                </button>
+     </button>
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Path("/recorridos")
 @Produces("application/json;charset=UTF-8")
@@ -125,5 +126,15 @@ public Response getAtracciones(@PathParam("id") int id) {
     } catch (SQLException e) {
         return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
     }
+    }
+    @POST @Path("/{id}/atracciones")
+    @Consumes("application/json")
+    public Response setAtracciones(@PathParam("id") int id, List<Map<String, Integer>> atracciones) {
+        try {
+            service.setAtraccionesRecorrido(id, atracciones);
+            return Response.ok("{\"ok\":true}").build();
+        } catch (SQLException e) {
+            return Response.serverError().entity("{\"error\": \"" + e.getMessage() + "\"}").build();
+        }
     }
 }

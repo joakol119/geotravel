@@ -229,6 +229,8 @@ public class RecorridoService {
     return getById(id);
 }
 
+
+
     // ============================================================
     // CONSULTAS GEOGRÁFICAS
     // ============================================================
@@ -307,6 +309,8 @@ public class RecorridoService {
             ps.executeUpdate();
         }
     }
+    
+
     public List<Map<String, Object>> getAtraccionesByRecorrido(int recorridoId) throws SQLException {
     String sql = "SELECT a.id, a.nombre, a.clasificacion, a.descripcion, " +
                  "ST_AsGeoJSON(a.geom) AS geojson, ra.orden " +
@@ -330,5 +334,27 @@ public class RecorridoService {
         }
         return result;
     }
+    }
+    public void setAtraccionesRecorrido(int recorridoId, List<Map<String, Integer>> atracciones) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                PreparedStatement del = conn.prepareStatement("DELETE FROM recorrido_atraccion WHERE recorrido_id = ?");
+                del.setInt(1, recorridoId);
+                del.executeUpdate();
+
+                PreparedStatement ins = conn.prepareStatement("INSERT INTO recorrido_atraccion (recorrido_id, atraccion_id, orden) VALUES (?, ?, ?)");
+                for (Map<String, Integer> a : atracciones) {
+                    ins.setInt(1, recorridoId);
+                    ins.setInt(2, a.get("atraccionId"));
+                    ins.setInt(3, a.get("orden"));
+                    ins.executeUpdate();
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
     }
 }

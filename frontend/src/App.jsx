@@ -120,6 +120,7 @@ export default function App() {
   const [showNuevoRecorrido, setShowNuevoRecorrido] = useState(false);
   const [formValues, setFormValues] = useState({});
   const [editingId, setEditingId] = useState(null);
+  const [editandoRecorrido, setEditandoRecorrido] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchMarker, setSearchMarker] = useState(null);
@@ -254,11 +255,11 @@ export default function App() {
   const handleEdit = (type, item) => {
     setEditingId(item.id);
     setDrawnGeojson(item.geojson);
-    if (type === 'recorrido') {
-      setFormValues({ nombre: item.nombre, descripcion: item.descripcion, duracionEstimada: item.duracionEstimada,
-        guiaResponsable: item.guiaResponsable, tipoExperiencia: item.tipoExperiencia, estado: item.estado,
-        estacionInicio: item.estacionInicio, estacionFin: item.estacionFin, geojson: item.geojson });
-    } else if (type === 'zona') {
+   if (type === 'recorrido') {
+      setEditandoRecorrido(item);
+      setShowNuevoRecorrido(true);
+      return;
+    }else if (type === 'zona') {
       setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
         nivelAtractivo: item.nivelAtractivo, observaciones: item.observaciones, geojson: item.geojson });
     } else {
@@ -399,19 +400,34 @@ const WelcomeModal = () => (
         <NuevoRecorridoModal
           zonas={zonas}
           atracciones={atracciones}
+          editando={editandoRecorrido}
           onDibujar={(form) => {
             setFormValues(form);
+            if (editandoRecorrido) setEditingId(editandoRecorrido.id);
             setShowNuevoRecorrido(false);
+            setEditandoRecorrido(null);
             startDraw('recorrido');
             setShowForm('recorrido');
           }}
-          onCrearDesdePuntos={(data) => {
-            setFormValues(data);
-            setDrawnGeojson(data.geojson);
-            setShowNuevoRecorrido(false);
-            setShowForm('recorrido');
+          onCrearDesdePuntos={async (data) => {
+            try {
+              const { puntos, ...recorridoData } = data;
+              recorridoData.estado = 'pendiente';
+              let recorrido;
+              if (editandoRecorrido) {
+                recorrido = await api.updateRecorrido(editandoRecorrido.id, recorridoData);
+              } else {
+                recorrido = await api.createRecorrido(recorridoData);
+              }
+              if (puntos && recorrido.id) {
+                await api.setAtraccionesRecorrido(recorrido.id, puntos.filter(p => p.tipo === 'atraccion' && p.id).map((p, i) => ({ atraccionId: parseInt(p.id), orden: i + 1 })));
+              }
+              setShowNuevoRecorrido(false);
+              setEditandoRecorrido(null);
+              await loadData();
+            } catch(e) { alert('Error al guardar recorrido: ' + e.message); }
           }}
-          onCancel={() => setShowNuevoRecorrido(false)}
+          onCancel={() => { setShowNuevoRecorrido(false); setEditandoRecorrido(null); }}
         />
       )}
       {showPopulares && (

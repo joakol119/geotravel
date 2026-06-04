@@ -277,3 +277,11 @@ export async function fetchAtraccionesPorZona(zonaId) {
   const res = await fetch(`${API}/atracciones/zona/${zonaId}`);
   return res.json();
 }
+
+export async function setAtraccionesRecorrido(recorridoId, atracciones) {
+  const res = await fetch(`${API}/recorridos/${recorridoId}/atracciones`, {
+    method: 'POST', headers: authHeaders(),
+    body: JSON.stringify(atracciones),
+  });
+  return res.json();
+}
