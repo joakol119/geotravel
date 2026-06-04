@@ -14,6 +14,7 @@ delete L.Browser.touch;
 import ImagePicker from './components/ImagePicker';
 import LoginScreen from './components/LoginScreen';
 import NuevoRecorridoModal from './components/NuevoRecorridoModal';
+import NuevaAtraccionModal from './components/NuevaAtraccionModal';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import * as api from './data/api';
@@ -121,6 +122,8 @@ export default function App() {
   const [formValues, setFormValues] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editandoRecorrido, setEditandoRecorrido] = useState(null);
+  const [showNuevaAtraccion, setShowNuevaAtraccion] = useState(false);
+  const [editandoAtraccion, setEditandoAtraccion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchMarker, setSearchMarker] = useState(null);
@@ -259,12 +262,13 @@ export default function App() {
       setEditandoRecorrido(item);
       setShowNuevoRecorrido(true);
       return;
-    }else if (type === 'zona') {
+    } else if (type === 'zona') {
       setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
         nivelAtractivo: item.nivelAtractivo, observaciones: item.observaciones, geojson: item.geojson });
-    } else {
-      setFormValues({ nombre: item.nombre, descripcion: item.descripcion,
-        clasificacion: item.clasificacion, tiempoEstimado: item.tiempoEstimado, geojson: item.geojson });
+    } else if (type === 'atraccion') {
+      setEditandoAtraccion(item);
+      setShowNuevaAtraccion(true);
+      return;
     }
     setSelected(null);
     setShowForm(type);
@@ -430,6 +434,33 @@ const WelcomeModal = () => (
           onCancel={() => { setShowNuevoRecorrido(false); setEditandoRecorrido(null); }}
         />
       )}
+
+      {showNuevaAtraccion && (
+        <NuevaAtraccionModal
+          editando={editandoAtraccion}
+          onUbicarEnMapa={(form) => {
+            setFormValues({ ...form, clasificacion: form.clasificacion || 'monumento' });
+            setShowNuevaAtraccion(false);
+            if (editandoAtraccion) setEditingId(editandoAtraccion.id);
+            startDraw('atraccion');
+            setShowForm('atraccion');
+          }}
+          onGuardar={async (data) => {
+            try {
+              if (editandoAtraccion) {
+                await api.updateAtraccion(editandoAtraccion.id, data);
+              } else {
+                await api.createAtraccion(data);
+              }
+              setShowNuevaAtraccion(false);
+              setEditandoAtraccion(null);
+              await loadData();
+            } catch(e) { alert('Error al guardar atracción: ' + e.message); }
+          }}
+          onCancel={() => { setShowNuevaAtraccion(false); setEditandoAtraccion(null); }}
+        />
+      )}
+
       {showPopulares && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', zIndex:3000, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ background:'white', borderRadius:16, padding:24, width:380, maxHeight:'70vh', overflowY:'auto' }}>
@@ -658,7 +689,7 @@ const WelcomeModal = () => (
             <>
               {authState === 'admin' && (
                 <div style={{ padding:'10px 0 6px' }}>
-                  <button className="toggle-chip active" onClick={() => startDraw('atraccion')} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
+                  <button className="toggle-chip active" onClick={() => setShowNuevaAtraccion(true)} style={{ background:'#0F6E56', borderColor:'#0F6E56' }}>+ Nueva atraccion</button>
                 </div>
               )}
               <div style={{ paddingBottom:10, borderTop:'0.5px solid #f0efe8', paddingTop:8, display:'flex', gap:6, flexWrap:'wrap' }}>

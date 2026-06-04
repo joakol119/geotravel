@@ -450,6 +450,7 @@ COPY public.atraccion_turistica (id, nombre, descripcion, clasificacion, geom, f
 48	Museo Torres García	Museo dedicado al artista uruguayo Joaquín Torres García, figura del arte universal.	museo	0101000020E61000007F15E0BBCD194CC068B27F9E067441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Museo_Torres_Garcia.jpg/330px-Museo_Torres_Garcia.jpg	30
 57	Plaza de Toros de Colonia	Antigua plaza de toros del siglo XIX, hoy convertida en museo y espacio cultural.	museo	0101000020E6100000F8DEDFA0BDEE4CC02EC55565DF3741C0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_de_Toros_-_Colonia_del_Sacramento.jpg/330px-Plaza_de_Toros_-_Colonia_del_Sacramento.jpg	30
 44	Teatro Solís	Principal teatro de Uruguay, inaugurado en 1856. Joya arquitectónica del patrimonio cultural montevideano.	teatro	0101000020E61000004241295AB9194CC05587DC0C377441C0	https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Teatro_Sol%C3%ADs_remodelado.jpg/330px-Teatro_Sol%C3%ADs_remodelado.jpg	30
+106	casa	a	monumento	0101000020E61000004BE7C3B304124CC0D8E033C8137341C0		0
 45	Plaza Independencia	Principal plaza de Montevideo con el Mausoleo de Artigas. Centro histórico y simbólico de la capital.	plaza	0101000020E61000008B6CE7FBA9194CC079E92631087441C0	\N	30
 46	Mercado del Puerto	Mercado gastronómico tradicional desde 1868. Famoso por sus parrillas y productos artesanales.	gastronomia	0101000020E61000006DE7FBA9F11A4CC0787AA52C437441C0	\N	30
 47	Puerta de la Ciudadela	Restos de la antigua muralla de Montevideo, símbolo de la historia colonial de la ciudad.	monumento	0101000020E610000060E5D022DB194CC0A301BC05127441C0	\N	30
@@ -620,7 +621,7 @@ COPY topology.layer (topology_id, layer_id, schema_name, table_name, feature_col
 -- Name: atraccion_turistica_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 104, true);
+SELECT pg_catalog.setval('public.atraccion_turistica_id_seq', 106, true);
 
 
 --
